@@ -23,14 +23,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent/15 via-background to-muted/30">
-            <span className="font-display text-2xl text-foreground/25">
+            <span className="font-medium text-2xl text-foreground/25">
               {project.title.slice(0, 1)}
             </span>
           </div>
         )}
       </div>
       <div className="p-5">
-        <h2 className="font-display text-xl tracking-tight text-foreground transition-colors group-hover:text-accent">
+        <h2 className="font-medium text-xl tracking-tight text-foreground transition-colors group-hover:text-accent">
           {project.title}
         </h2>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">

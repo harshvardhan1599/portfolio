@@ -32,9 +32,9 @@ export default async function ProjectPage({ params }: Props) {
 
   return (
     <article className="flex-1">
-      <div className="mx-auto max-w-3xl px-6 pb-20 pt-10 md:pt-14">
+      <div className="mx-auto max-w-3xl px-8 pb-20 pt-10 md:pt-14">
         <Link
-          href="/work"
+          href="/"
           className="text-sm font-medium text-muted transition-colors hover:text-accent"
         >
           ← Back to work
@@ -50,7 +50,7 @@ export default async function ProjectPage({ params }: Props) {
               </li>
             ))}
           </ul>
-          <h1 className="mt-6 font-display text-4xl tracking-tight text-foreground md:text-5xl">
+          <h1 className="mt-6 font-medium text-4xl tracking-tight text-foreground md:text-5xl">
             {project.title}
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted">
@@ -73,7 +73,7 @@ export default async function ProjectPage({ params }: Props) {
             className="mt-12 flex aspect-video items-center justify-center rounded-2xl border border-foreground/10 bg-gradient-to-br from-accent/15 via-background to-muted/30"
             aria-hidden
           >
-            <span className="font-display text-5xl text-foreground/20">
+            <span className="font-medium text-5xl text-foreground/20">
               {project.title.slice(0, 1)}
             </span>
           </div>

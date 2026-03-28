@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 const nav = [
-  { href: "/", label: "Home" },
-  { href: "/work", label: "Work" },
+  { href: "/", label: "Work" },
 ] as const;
 
 export function SiteHeader() {
@@ -11,7 +10,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
-          className="font-display text-lg tracking-tight text-foreground transition-opacity hover:opacity-70"
+          className="text-lg font-medium tracking-tight text-foreground transition-opacity hover:opacity-70"
         >
           Portfolio
         </Link>
