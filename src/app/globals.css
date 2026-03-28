@@ -4,7 +4,7 @@
   --background: #FAFAFA;
   --foreground: #32404F;
   --muted: #858E97;
-  --accent: #b45309;
+  --accent: #FF5800;
   --surface: #F0F0F0;
 }
 
@@ -31,7 +31,7 @@ body::after {
   top: 0;
   bottom: 0;
   width: 48px;
-  background-image: radial-gradient(circle, #EAEAEA 1px, transparent 1px);
+  background-image: radial-gradient(circle, #DEDEDE 1px, transparent 1px);
   background-size: 4px 4px;
   pointer-events: none;
   z-index: 0;
@@ -40,7 +40,7 @@ body::before { left: 0; }
 body::after  { right: 0; }
 
 .text-heading {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 32px;
   line-height: 130%;
   letter-spacing: -0.03em;
@@ -67,6 +67,9 @@ body::after  { right: 0; }
 }
 .link-hover:hover {
   background-color: #EEEEEE;
+}
+.link-hover-accent:hover {
+  background-color: #F9ECE5;
 }
 
 .hide-scrollbar {

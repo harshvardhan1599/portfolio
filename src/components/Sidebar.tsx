@@ -30,7 +30,7 @@ export function Sidebar() {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-body text-muted transition-colors hover:text-foreground"
+                className="text-body text-muted hover:text-foreground link-hover w-fit"
               >
                 {item.label}
               </a>
@@ -41,9 +41,9 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-body transition-colors ${
+              className={`text-body link-hover w-fit ${
                 isActive
-                  ? "text-accent font-medium"
+                  ? "text-accent font-medium link-hover-accent"
                   : "text-muted hover:text-foreground"
               }`}
             >
