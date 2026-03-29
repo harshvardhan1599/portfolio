@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Greeting } from "@/components/Greeting";
 import { experiences } from "@/data/experience";
 
@@ -30,10 +31,10 @@ export default function Home() {
                 <tr
                   key={exp.year + exp.company}
                 >
-                  <td className="text-alt py-3 pr-8 text-muted whitespace-nowrap">
+                  <td className="text-alt py-2 pr-8 text-muted whitespace-nowrap">
                     {exp.year}
                   </td>
-                  <td className="text-body py-3 pr-8 font-medium text-foreground">
+                  <td className="text-body py-2 pr-8 font-medium text-foreground">
                     {exp.url ? (
                       <a href={exp.url} target="_blank" rel="noopener noreferrer" className="link-hover">
                         {exp.company}
@@ -42,7 +43,7 @@ export default function Home() {
                       exp.company
                     )}
                   </td>
-                  <td className="text-body py-3 text-muted">
+                  <td className="text-body py-2 text-muted">
                     {exp.role}
                   </td>
                 </tr>
@@ -60,10 +61,17 @@ export default function Home() {
           , an agentic sales CRM incubated at Suttor Hill Ventures.
         </p>
 
-        {/* Project screenshots placeholder */}
+        {/* Project screenshots */}
         <div className="mt-16">
-          <div className="aspect-[16/10] w-full rounded-lg bg-surface flex items-center justify-center text-muted">
-            Project screenshots will go here
+          <div className="w-full rounded-lg bg-fill p-6">
+            <Image
+              src="/work/sensei-hero.webp"
+              alt="Sensei Agent — Deal overview with AI-powered action items"
+              width={1312}
+              height={912}
+              className="w-full rounded-lg"
+              priority
+            />
           </div>
         </div>
       </section>

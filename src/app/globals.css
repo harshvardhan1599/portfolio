@@ -6,6 +6,24 @@
   --muted: #858E97;
   --accent: #FF5800;
   --surface: #F0F0F0;
+  --page-bg: #F8F9F9;
+  --border: #DEDEDE;
+  --hover: #EEEEEE;
+  --hover-accent: #F9ECE5;
+  --fill: #F4F4F4;
+}
+
+.dark {
+  --background: #171718;
+  --foreground: #FFFFFF;
+  --muted: #97989A;
+  --accent: #FF5800;
+  --surface: #27272A;
+  --page-bg: #070707;
+  --border: #37373A;
+  --hover: #27272A;
+  --hover-accent: #3D2416;
+  --fill: #303032;
 }
 
 @theme inline {
@@ -14,13 +32,18 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
+  --color-page-bg: var(--page-bg);
+  --color-border: var(--border);
+  --color-hover: var(--hover);
+  --color-hover-accent: var(--hover-accent);
+  --color-fill: var(--fill);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
-  background-color: #F8F9F9;
+  background-color: var(--page-bg);
   color: var(--foreground);
 }
 
@@ -31,7 +54,7 @@ body::after {
   top: 0;
   bottom: 0;
   width: 48px;
-  background-image: radial-gradient(circle, #DEDEDE 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
   background-size: 4px 4px;
   pointer-events: none;
   z-index: 0;
@@ -66,10 +89,10 @@ body::after  { right: 0; }
   transition: background-color 0.15s ease;
 }
 .link-hover:hover {
-  background-color: #EEEEEE;
+  background-color: var(--hover);
 }
 .link-hover-accent:hover {
-  background-color: #F9ECE5;
+  background-color: var(--hover-accent);
 }
 
 .hide-scrollbar {
