@@ -28,10 +28,10 @@ export default function Home() {
                   <tr
                     key={exp.year + exp.company}
                   >
-                    <td className="text-alt py-2 pr-8 text-muted whitespace-nowrap">
+                    <td className="text-alt py-2 pr-2 text-muted whitespace-nowrap">
                       {exp.year}
                     </td>
-                    <td className="text-body py-2 pr-8 font-medium text-foreground">
+                    <td className="text-body py-2 pr-2 font-medium text-foreground">
                       {exp.url ? (
                         <a href={exp.url} target="_blank" rel="noopener noreferrer" className="link-hover">
                           {exp.company}
@@ -61,7 +61,7 @@ export default function Home() {
           </p>
 
           <div className="mt-2">
-            <div className="w-full rounded-none bg-fill px-10 py-8">
+            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-10 py-8">
               <Image
                 src="/work/Product.webp"
                 alt="Sensei Agent — Deal overview with AI-powered action items"
@@ -74,17 +74,17 @@ export default function Home() {
           </div>
 
           {/* Project grid */}
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
-            <div className="md:col-span-3 rounded-none bg-fill-secondary h-120 overflow-hidden">
+          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
+            <div className="md:col-span-3 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
               <Image
                 src="/work/Brand1.webp"
                 alt="Sensei Agent — Sales is hard brand mockup on tablet"
                 width={1400}
                 height={934}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
               />
             </div>
-            <div className="md:col-span-2 py-10 rounded-none bg-fill-secondary h-120 overflow-hidden">
+            <div className="md:col-span-2 py-10 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
               <Image
                 src="/work/Brand2.webp"
                 alt="Sensei Agent — Elevate Your Game brand stories"
@@ -102,8 +102,8 @@ export default function Home() {
             <span className="text-foreground font-medium">Airbase</span>, spend management platform. Acquired by Paylocity in 2025.
           </p>
 
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-10 gap-2">
-            <div className="md:col-span-4 rounded-none p-4 bg-fill-secondary overflow-hidden">
+          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-10 gap-2">
+            <div className="md:col-span-4 rounded-none p-4 bg-fill-secondary hover:bg-fill-hover transition-colors overflow-hidden">
               <Image
                 src="/work/Airbase1.webp"
                 alt="Airbase — Spend via cards, spending by person, and declined transactions dashboards"
@@ -112,19 +112,19 @@ export default function Home() {
                 className="w-full"
               />
             </div>
-            <div className="md:col-span-6 rounded-none bg-fill overflow-hidden">
+            <div className="md:col-span-6 rounded-none bg-fill hover:bg-fill-hover transition-colors overflow-hidden">
               <Image
                 src="/work/Airbase2.webp"
                 alt="Airbase — Ledger entries pending review"
                 width={1024}
                 height={1024}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
               />
             </div>
           </div>
 
           <div className="mt-2">
-            <div className="w-full rounded-none bg-fill px-4 pt-4 pb-0 overflow-hidden">
+            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-4 pt-4 pb-0 overflow-hidden">
               <Image
                 src="/work/Airbase3.webp"
                 alt="Airbase — Reports & Analytics productivity dashboard"
@@ -144,7 +144,7 @@ export default function Home() {
           </p>
 
           <div className="mt-2">
-            <div className="w-full rounded-none bg-fill px-8 py-8 overflow-hidden">
+            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-8 py-8 overflow-hidden">
               <Image
                 src="/work/SwadeshHero.webp"
                 alt="Swadesh — Link account, credit, and cards screens"
@@ -155,17 +155,17 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="rounded-none bg-fill h-120 overflow-hidden">
+          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="rounded-none bg-fill hover:bg-fill-hover transition-colors h-120 overflow-hidden">
               <Image
                 src="/work/SwadeshMock.webp"
                 alt="Swadesh — Phone mockup on green fabric"
                 width={1000}
                 height={1200}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
               />
             </div>
-            <div className="rounded-none bg-fill-secondary h-120 overflow-hidden px-4 pt-4 pb-0">
+            <div className="rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden px-4 pt-4 pb-0">
               <Image
                 src="/work/SwadeshMockup.webp"
                 alt="Swadesh — Debit Visa card mockup"

@@ -12,6 +12,8 @@
   --hover-accent: #F9ECE5;
   --fill: #E0E0E0;
   --fill-secondary: #F4F4F4;
+  --fill-hover: #D8D8D8;
+  --cursor-pill: #E8E8E8;
 }
 
 .dark {
@@ -26,6 +28,8 @@
   --hover-accent: #3D2416;
   --fill: #303032;
   --fill-secondary: #303032;
+  --fill-hover: #434343;
+  --cursor-pill: #333333;
 }
 
 @theme inline {
@@ -40,6 +44,8 @@
   --color-hover-accent: var(--hover-accent);
   --color-fill: var(--fill);
   --color-fill-secondary: var(--fill-secondary);
+  --color-fill-hover: var(--fill-hover);
+  --color-cursor-pill: var(--cursor-pill);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -81,6 +87,11 @@ body::after  { right: 0; }
 
 .text-body {
   font-size: 15px;
+  line-height: 140%;
+}
+
+.text-body-sm {
+  font-size: 13px;
   line-height: 140%;
 }
 
