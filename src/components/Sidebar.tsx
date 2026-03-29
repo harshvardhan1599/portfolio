@@ -19,7 +19,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex w-32 pt-12 shrink-0 flex-col gap-3">
+    <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-3 pt-12">
       <nav className="flex flex-col gap-3">
         {navItems.map((item) => {
           const isActive =

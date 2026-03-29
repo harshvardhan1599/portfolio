@@ -10,7 +10,8 @@
   --border: #DEDEDE;
   --hover: #EEEEEE;
   --hover-accent: #F9ECE5;
-  --fill: #F4F4F4;
+  --fill: #E0E0E0;
+  --fill-secondary: #F4F4F4;
 }
 
 .dark {
@@ -24,6 +25,7 @@
   --hover: #27272A;
   --hover-accent: #3D2416;
   --fill: #303032;
+  --fill-secondary: #303032;
 }
 
 @theme inline {
@@ -37,6 +39,7 @@
   --color-hover: var(--hover);
   --color-hover-accent: var(--hover-accent);
   --color-fill: var(--fill);
+  --color-fill-secondary: var(--fill-secondary);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -45,6 +48,12 @@
 body {
   background-color: var(--page-bg);
   color: var(--foreground);
+}
+
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
 }
 
 body::before,
