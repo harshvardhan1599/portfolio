@@ -66,7 +66,7 @@ export function CustomCursor() {
       }}
     >
       <span
-        className="text-body-sm text-foreground whitespace-nowrap"
+        className="text-body-sm text-foreground-inverse whitespace-nowrap"
         style={{
           opacity: isPill ? 1 : 0,
           transform: isPill ? "scale(1)" : "scale(0)",

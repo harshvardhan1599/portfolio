@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Greeting } from "@/components/Greeting";
 import { experiences } from "@/data/experience";
 
@@ -22,7 +23,7 @@ export default function Home() {
           </p> */}
 
           <div className="mt-6">
-            <table className="w-full">
+            <table className="w-[80%]">
               <tbody>
                 {experiences.map((exp) => (
                   <tr
@@ -52,7 +53,7 @@ export default function Home() {
 
         {/* Summary & Project screenshots */}
         <div className="pb-16">
-          <p className="text-body text-muted px-6 md:px-10">
+          <p className="text-body text-muted px-6 pb-4 md:px-10">
             Currently leading design and product at{" "}
             <span className="font-medium text-foreground underline">
               Sensei Agent
@@ -61,39 +62,43 @@ export default function Home() {
           </p>
 
           <div className="mt-2">
-            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-10 py-8">
-              <Image
-                src="/work/Product.webp"
-                alt="Sensei Agent — Deal overview with AI-powered action items"
-                width={1312}
-                height={912}
-                className="w-full border border-border object-center rounded-lg"
-                priority
-              />
-            </div>
+            <Link href="/work/sensei-agent" className="block">
+              <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-10 py-8">
+                <Image
+                  src="/work/Product.webp"
+                  alt="Sensei Agent — Deal overview with AI-powered action items"
+                  width={1312}
+                  height={912}
+                  className="w-full border border-border object-center rounded-lg"
+                  priority
+                />
+              </div>
+            </Link>
           </div>
 
           {/* Project grid */}
-          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
-            <div className="md:col-span-3 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
-              <Image
-                src="/work/Brand1.webp"
-                alt="Sensei Agent — Sales is hard brand mockup on tablet"
-                width={1400}
-                height={934}
-                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
-              />
+          <Link href="/work/sensei-agent" className="block">
+            <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-5 gap-2">
+              <div className="md:col-span-3 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
+                <Image
+                  src="/work/Brand1.webp"
+                  alt="Sensei Agent — Sales is hard brand mockup on tablet"
+                  width={1400}
+                  height={934}
+                  className="h-full w-full object-cover hover:opacity-80 transition-opacity"
+                />
+              </div>
+              <div className="md:col-span-2 py-10 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
+                <Image
+                  src="/work/Brand2.webp"
+                  alt="Sensei Agent — Elevate Your Game brand stories"
+                  width={1400}
+                  height={934}
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
             </div>
-            <div className="md:col-span-2 py-10 rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden">
-              <Image
-                src="/work/Brand2.webp"
-                alt="Sensei Agent — Elevate Your Game brand stories"
-                width={1400}
-                height={934}
-                className="h-full w-full object-cover object-center"
-              />
-            </div>
-          </div>
+          </Link>
         </div>
 
         {/* Project 2 */}
