@@ -46,6 +46,24 @@ const caseStudyNavs: Record<string, CaseStudyNav> = {
       },
     ],
   },
+  "/work/airbase": {
+    backHref: "/",
+    meta: [
+      { eyebrow: "Role", value: "Product Designer" },
+      { eyebrow: "Timeline", value: "2024" },
+      {
+        eyebrow: "Website",
+        value: "airbase.com",
+        href: "https://airbase.com",
+        external: true,
+      },
+      {
+        eyebrow: "Case study",
+        value: "Get in touch ↗",
+        href: "mailto:harshvardhan1599@gmail.com",
+      },
+    ],
+  },
 };
 
 export function Sidebar() {

@@ -107,38 +107,40 @@ export default function Home() {
             <span className="text-foreground font-medium">Airbase</span>, spend management platform. Acquired by Paylocity in 2025.
           </p>
 
-          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-10 gap-2">
-            <div className="md:col-span-4 rounded-none p-4 bg-fill-secondary hover:bg-fill-hover transition-colors overflow-hidden">
-              <Image
-                src="/work/Airbase1.webp"
-                alt="Airbase — Spend via cards, spending by person, and declined transactions dashboards"
-                width={800}
-                height={1400}
-                className="w-full"
-              />
+          <Link href="/work/airbase" className="block">
+            <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-10 gap-2">
+              <div className="md:col-span-4 rounded-none p-4 bg-fill-secondary hover:bg-fill-hover transition-colors overflow-hidden">
+                <Image
+                  src="/work/Airbase1.webp"
+                  alt="Airbase — Spend via cards, spending by person, and declined transactions dashboards"
+                  width={800}
+                  height={1400}
+                  className="w-full"
+                />
+              </div>
+              <div className="md:col-span-6 rounded-none bg-fill hover:bg-fill-hover transition-colors overflow-hidden">
+                <Image
+                  src="/work/Airbase2.webp"
+                  alt="Airbase — Ledger entries pending review"
+                  width={1024}
+                  height={1024}
+                  className="h-full w-full object-cover hover:opacity-80 transition-opacity"
+                />
+              </div>
             </div>
-            <div className="md:col-span-6 rounded-none bg-fill hover:bg-fill-hover transition-colors overflow-hidden">
-              <Image
-                src="/work/Airbase2.webp"
-                alt="Airbase — Ledger entries pending review"
-                width={1024}
-                height={1024}
-                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
-              />
-            </div>
-          </div>
 
-          <div className="mt-2">
-            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-4 pt-4 pb-0 overflow-hidden">
-              <Image
-                src="/work/Airbase3.webp"
-                alt="Airbase — Reports & Analytics productivity dashboard"
-                width={1536}
-                height={800}
-                className="w-full"
-              />
+            <div className="mt-2">
+              <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-4 pt-4 pb-0 overflow-hidden">
+                <Image
+                  src="/work/Airbase3.webp"
+                  alt="Airbase — Reports & Analytics productivity dashboard"
+                  width={1536}
+                  height={800}
+                  className="w-full"
+                />
+              </div>
             </div>
-          </div>
+          </Link>
 
         </div>
 
