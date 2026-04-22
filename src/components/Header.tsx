@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const projectNames: Record<string, string> = {
   "/work/sensei-agent": "Sensei Agent",
   "/work/airbase": "Airbase",
+  "/work/swadesh": "Swadesh",
 };
 
 function CaretRight() {

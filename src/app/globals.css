@@ -66,6 +66,26 @@
 }
 
 
+.theme-swadesh {
+  --accent: #166C3B;
+  --hover-accent: #E0EDEA;
+}
+
+.dark.theme-swadesh {
+  --accent: #A6E8C4;
+  --hover-accent: #114035;
+}
+
+.theme-sensei-agent {
+  --accent: #845201;
+  --hover-accent: #FDF2DC;
+}
+
+.dark.theme-sensei-agent {
+  --accent: #ECB42D;
+  --hover-accent: #453715;
+}
+
 body {
   background-color: var(--page-bg);
   color: var(--foreground);

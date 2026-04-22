@@ -150,38 +150,40 @@ export default function Home() {
           Led design and branding at <span className="text-foreground font-medium">Swadesh (YC S19)</span>, building a cross-border banking solution.
           </p>
 
-          <div className="mt-2">
-            <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-8 py-8 overflow-hidden">
-              <Image
-                src="/work/SwadeshHero.webp"
-                alt="Swadesh — Link account, credit, and cards screens"
-                width={1440}
-                height={800}
-                className="w-full"
-              />
+          <Link href="/work/swadesh" className="block">
+            <div className="mt-2">
+              <div data-cursor="case-study" className="w-full rounded-none bg-fill hover:bg-fill-hover transition-colors px-8 py-8 overflow-hidden">
+                <Image
+                  src="/work/SwadeshHero.webp"
+                  alt="Swadesh — Link account, credit, and cards screens"
+                  width={1440}
+                  height={800}
+                  className="w-full"
+                />
+              </div>
             </div>
-          </div>
 
-          <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="rounded-none bg-fill hover:bg-fill-hover transition-colors h-120 overflow-hidden">
-              <Image
-                src="/work/SwadeshMock.webp"
-                alt="Swadesh — Phone mockup on green fabric"
-                width={1000}
-                height={1200}
-                className="h-full w-full object-cover hover:opacity-80 transition-opacity"
-              />
+            <div data-cursor="case-study" className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="rounded-none bg-fill hover:bg-fill-hover transition-colors h-120 overflow-hidden">
+                <Image
+                  src="/work/SwadeshMock.webp"
+                  alt="Swadesh — Phone mockup on green fabric"
+                  width={1000}
+                  height={1200}
+                  className="h-full w-full object-cover hover:opacity-80 transition-opacity"
+                />
+              </div>
+              <div className="rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden px-4 pt-4 pb-0">
+                <Image
+                  src="/work/SwadeshMockup.webp"
+                  alt="Swadesh — Debit Visa card mockup"
+                  width={1024}
+                  height={1024}
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
             </div>
-            <div className="rounded-none bg-fill-secondary hover:bg-fill-hover transition-colors h-120 overflow-hidden px-4 pt-4 pb-0">
-              <Image
-                src="/work/SwadeshMockup.webp"
-                alt="Swadesh — Debit Visa card mockup"
-                width={1024}
-                height={1024}
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
-          </div>
+          </Link>
         </div>
       </section>
     </div>

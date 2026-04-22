@@ -5,9 +5,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
+import { ProjectTheme } from "@/components/ProjectTheme";
 import "./globals.css";
 
 const themeScript = `(function(){try{if(localStorage.getItem("theme")==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
+
+const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -51,8 +54,10 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: projectThemeScript }} />
       </head>
       <body className="min-h-full bg-background font-sans text-foreground">
+        <ProjectTheme />
         <CustomCursor />
         <Header />
         <Sidebar />

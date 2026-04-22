@@ -64,6 +64,24 @@ const caseStudyNavs: Record<string, CaseStudyNav> = {
       },
     ],
   },
+  "/work/swadesh": {
+    backHref: "/",
+    meta: [
+      { eyebrow: "Role", value: "Founding Designer" },
+      { eyebrow: "Timeline", value: "2021-2024" },
+      {
+        eyebrow: "Website",
+        value: "swadesh.co",
+        href: "https://swadesh.co",
+        external: true,
+      },
+      {
+        eyebrow: "Case study",
+        value: "Get in touch ↗",
+        href: "mailto:harshvardhan1599@gmail.com",
+      },
+    ],
+  },
 };
 
 export function Sidebar() {
