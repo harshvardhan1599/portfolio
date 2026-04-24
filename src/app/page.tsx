@@ -69,7 +69,7 @@ export default function Home() {
                   alt="Sensei Agent — Deal overview with AI-powered action items"
                   width={1312}
                   height={912}
-                  className="w-full border border-border object-center rounded-lg"
+                  className="w-full object-center rounded-lg"
                   priority
                 />
               </div>

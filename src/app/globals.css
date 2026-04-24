@@ -118,6 +118,7 @@ body::after  { right: 0; }
   font-size: 40px;
   line-height: 130%;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .text-heading-md {
@@ -126,14 +127,18 @@ body::after  { right: 0; }
   font-size: 32px;
   line-height: 130%;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .text-body {
+  font-family: var(--font-sans);
   font-size: 15px;
   line-height: 140%;
+  text-wrap: pretty;
 }
 
 .text-body-sm {
+  font-family: var(--font-sans);
   font-size: 13px;
   line-height: 140%;
 }
@@ -172,6 +177,15 @@ body::after  { right: 0; }
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;                  /* Chrome/Safari */
+}
+
+.border-overlay {
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+.dark .border-overlay {
+  outline: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .bg-diagonal-lines {

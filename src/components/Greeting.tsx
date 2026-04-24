@@ -23,7 +23,7 @@ export function Greeting() {
   if (!time) return null;
 
   return (
-    <span className="text-alt text-muted">
+    <span className="text-alt text-muted tabular-nums">
       DEL, IND &bull; {time}
     </span>
   );

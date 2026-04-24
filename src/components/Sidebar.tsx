@@ -9,7 +9,6 @@ type NavItem =
 
 const navItems: NavItem[] = [
   { href: "/", label: "Work" },
-  { href: "/fun", label: "Fun" },
   { href: "/about", label: "About Me" },
   { href: "/contact", label: "Contact" },
   { href: "mailto:hello@example.com", label: "Email", external: true },

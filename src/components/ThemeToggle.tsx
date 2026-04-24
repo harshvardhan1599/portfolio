@@ -58,7 +58,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex items-center gap-0.5 rounded-full bg-surface p-1 transition-colors"
+      className="flex items-center gap-0.5 rounded-full bg-surface p-1.5 transition-colors"
       aria-label="Toggle theme"
     >
       <span
