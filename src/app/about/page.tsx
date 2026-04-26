@@ -54,8 +54,8 @@ export default function AboutPage() {
           </h1>
         </div>
 
-        <div className="px-4 pb-8 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="md:col-span-2 flex flex-col gap-3">
+        <div className="px-4 pb-8 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="md:col-span-3 flex flex-col gap-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Tile eyebrow="ABOUT ME" bg="#FFCBA1">
                 <p className="text-body text-foreground">
@@ -83,38 +83,40 @@ export default function AboutPage() {
 
             <Tile eyebrow="PHILOSOPHY" bg="#84A1F0" invertText>
               <p className="text-body text-foreground-inverse">
-                Design should disappear. Not use, so that the people who touch
-                it never know there was a problem it solved. Its softness gets
+                Design should disappear into use, so that the people who touch
+                it never know there was a problem it solved. As software gets
                 cheaper to make, that kind of judgment is where the value goes
                 — and where I want to be.
               </p>
             </Tile>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="border-overlay rounded-2xl bg-fill aspect-square overflow-hidden relative">
+          <div className="flex flex-col gap-3 h-full">
+            <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-0 overflow-hidden relative">
               <Image
                 src="/about/Me.png"
                 alt="Portrait of Harsh Vardhan Singh"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 33vw, 100vw"
+                sizes="(min-width: 768px) 25vw, 100vw"
               />
+              <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
             </div>
-            <div className="border-overlay rounded-2xl bg-fill aspect-square overflow-hidden relative">
+            <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-0 overflow-hidden relative">
               <Image
                 src="/about/map.png"
                 alt="Map of Delhi, India"
                 fill
                 className="object-cover"
-                sizes="(min-width: 768px) 33vw, 100vw"
+                sizes="(min-width: 768px) 25vw, 100vw"
               />
+              <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
             </div>
           </div>
 
           <ImageTile label="outside-work" />
 
-          <Tile eyebrow="LORE" className="md:col-span-2">
+          <Tile eyebrow="LORE" className="md:col-span-3">
             <p className="text-body text-foreground">
               My non-Diet-Coke-fueled hours often look like:
             </p>
@@ -126,7 +128,7 @@ export default function AboutPage() {
             </ul>
           </Tile>
 
-          <Tile eyebrow="WE SHOULD TALK" className="md:col-span-3">
+          <Tile eyebrow="WE SHOULD TALK" className="md:col-span-4">
             <p className="text-body text-foreground">
               Have something you want to pick my brain about? Interested in a
               collab? We should talk.
