@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { CameraReel } from "@/components/CameraReel";
+import { CopyEmailButton } from "@/components/CopyEmailButton";
 import { SelectionFrame } from "@/components/SelectionFrame";
+import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons";
+import { Toggle } from "@/components/Toggle";
 
 export const metadata: Metadata = {
   title: "About",
@@ -30,31 +34,22 @@ function Tile({ eyebrow, className = "", bg, invertText, children }: TileProps) 
   );
 }
 
-function ImageTile({ className = "", label }: { className?: string; label: string }) {
-  return (
-    <div
-      className={`border-overlay rounded-2xl bg-fill aspect-square ${className}`}
-      aria-label={label}
-    >
-      {/* image placeholder: {label} */}
-    </div>
-  );
-}
-
 export default function AboutPage() {
   return (
     <article className="flex-1">
       <section className="w-full max-w-4xl">
-        <div className="px-6 pb-8 pt-10 md:px-10 md:pt-12">
-          <h1 className="text-heading-md text-foreground">
+        <div className="px-6 pb-8 pt-10 md:px-10 md:pt-12 flex flex-col md:flex-row md:items-center gap-6">
+          <h1 className="text-heading-md text-foreground flex-1">
             I&apos;m{" "}
             <SelectionFrame>Harsh Vardhan Singh</SelectionFrame>
             , a product designer &amp; builder, driven by curiosity and diet
             coke.
           </h1>
+          <Toggle ariaLabel="Toggle" />
         </div>
 
-        <div className="px-4 pb-8 grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="px-4 pb-8 flex flex-col gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div className="md:col-span-3 flex flex-col gap-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Tile eyebrow="ABOUT ME" bg="#FFCBA1">
@@ -113,47 +108,88 @@ export default function AboutPage() {
               <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
             </div>
           </div>
-
-          <ImageTile label="outside-work" />
-
-          <Tile eyebrow="LORE" className="md:col-span-3">
-            <p className="text-body text-foreground">
-              My non-Diet-Coke-fueled hours often look like:
-            </p>
-            <ul className="text-body text-foreground mt-2 list-disc pl-5 space-y-1">
-              <li>horror movies, and driving opinions about them on Letterboxd</li>
-              <li>Nikes and runs, usually in that order</li>
-              <li>watching Liverpool lose</li>
-              <li>a shelf of dystopian novels</li>
-            </ul>
-          </Tile>
-
-          <Tile eyebrow="WE SHOULD TALK" className="md:col-span-4">
-            <p className="text-body text-foreground">
-              Have something you want to pick my brain about? Interested in a
-              collab? We should talk.
-            </p>
-          </Tile>
-        </div>
-
-        <div className="px-4 pb-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <a href="#" aria-label="X" className="text-muted hover:text-foreground">
-              <div className="border-overlay w-5 h-5 rounded-2xl bg-fill" />
-            </a>
-            <a href="#" aria-label="GitHub" className="text-muted hover:text-foreground">
-              <div className="border-overlay w-5 h-5 rounded-2xl bg-fill" />
-            </a>
-            <a href="#" aria-label="LinkedIn" className="text-muted hover:text-foreground">
-              <div className="border-overlay w-5 h-5 rounded-2xl bg-fill" />
-            </a>
           </div>
-          <button
-            type="button"
-            className="border-overlay rounded-2xl text-alt-sm text-foreground bg-fill-secondary hover:bg-fill-hover transition-colors px-3 py-2"
-          >
-            Copy Email
-          </button>
+
+          <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] gap-3">
+          <CameraReel
+            images={[
+              {
+                src: "/carousel/carousel1.png",
+                alt: "Architectural columns at sunset",
+              },
+              {
+                src: "/carousel/carousel2.png",
+                alt: "Camera reel photo 2",
+              },
+              {
+                src: "/carousel/carousel3.mp4",
+                alt: "Camera reel video",
+              },
+              {
+                src: "/carousel/carousel4.mp4",
+                alt: "Camera reel video 2",
+              },
+              {
+                src: "/carousel/carousel5.jpg",
+                alt: "Camera reel photo 3",
+              },
+            ]}
+          />
+
+          <div className="flex flex-col gap-3">
+            <Tile eyebrow="LORE" bg="#C6E6C1">
+              <p className="text-body text-foreground">
+                My non-Diet-Coke-fueled hours often look like:
+              </p>
+              <ul className="text-body text-foreground mt-4 space-y-1">
+                <li>★ horror movies, and strong opinions about them on Letterboxd</li>
+                <li>◎ hikes and runs, usually in that order</li>
+                <li>⚽ watching Liverpool lose</li>
+                <li>⍥ a shelf of dystopian novels</li>
+              </ul>
+            </Tile>
+
+            <Tile eyebrow="WE SHOULD TALK" bg="#F6ECD9">
+              <p className="text-body text-foreground">
+                Have something you want to pick my brain about? Interested in a
+                collab? We should talk.
+              </p>
+              <div className="mt-10 flex items-center gap-4">
+                <a
+                  href="https://twitter.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Twitter"
+                  className="text-foreground hover:opacity-70 transition-opacity"
+                >
+                  <TwitterIcon className="h-4 w-auto" />
+                </a>
+                <a
+                  href="https://github.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="GitHub"
+                  className="text-foreground hover:opacity-70 transition-opacity"
+                >
+                  <GithubIcon className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://linkedin.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn"
+                  className="text-foreground hover:opacity-70 transition-opacity"
+                >
+                  <LinkedinIcon className="h-4 w-4" />
+                </a>
+                <CopyEmailButton
+                  email="harshvardhan1599@gmail.com"
+                  className="ml-auto"
+                />
+              </div>
+            </Tile>
+          </div>
+          </div>
         </div>
       </section>
     </article>
