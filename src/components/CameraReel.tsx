@@ -11,10 +11,16 @@ export function CameraReel({
   images,
   bg,
   className = "",
+  transitionDelay,
+  on = false,
+  darkGradient,
 }: {
   images: CameraReelImage[];
   bg?: string;
   className?: string;
+  transitionDelay?: string;
+  on?: boolean;
+  darkGradient?: string;
 }) {
   const [index, setIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -64,12 +70,26 @@ export function CameraReel({
 
   return (
     <div
-      className={`border-overlay rounded-2xl p-1 flex flex-col transition-colors duration-500 ease-out ${
+      className={`relative border-overlay rounded-2xl p-1 flex flex-col transition-colors duration-500 ease-out ${
         bg ? "" : "bg-fill-secondary"
       } ${className}`}
-      style={bg ? { backgroundColor: bg } : undefined}
+      style={{
+        ...(bg ? { backgroundColor: bg } : {}),
+        ...(transitionDelay ? { transitionDelay } : {}),
+      }}
     >
-      <div className="flex items-center justify-between pt-[20px] px-[20px]">
+      {darkGradient ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl hidden dark:block transition-opacity duration-500 ease-out ring-1 ring-inset ring-white/15"
+          style={{
+            backgroundImage: darkGradient,
+            opacity: on ? 1 : 0,
+            ...(transitionDelay ? { transitionDelay } : {}),
+          }}
+        />
+      ) : null}
+      <div className="relative flex items-center justify-between pt-[20px] px-[20px]">
         <p className="text-alt text-foreground">CAMERA REEL</p>
         <div className="flex items-center gap-1.5">
           {images.map((_, i) => (

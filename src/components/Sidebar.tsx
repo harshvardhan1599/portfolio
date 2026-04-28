@@ -10,8 +10,7 @@ type NavItem =
 const navItems: NavItem[] = [
   { href: "/", label: "Work" },
   { href: "/about", label: "About Me" },
-  { href: "/contact", label: "Contact" },
-  { href: "mailto:hello@example.com", label: "Email", external: true },
+  { href: "/resume.pdf", label: "Resume", external: true },
 ];
 
 type MetaItem = {
@@ -89,10 +88,10 @@ export function Sidebar() {
 
   if (caseStudy) {
     return (
-      <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-8 pt-12">
+      <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-8 pt-12 font-mono uppercase">
         <Link
           href={caseStudy.backHref}
-          className="text-body text-muted hover:text-foreground link-hover w-fit inline-flex items-center gap-1.5 -mx-2 -my-1"
+          className="text-[15px] leading-[140%] text-muted hover:text-foreground link-hover w-fit inline-flex items-center gap-1.5 -mx-2 -my-1"
         >
           <svg
             width="20"
@@ -129,12 +128,12 @@ export function Sidebar() {
                     {...(item.external
                       ? { target: "_blank", rel: "noreferrer" }
                       : {})}
-                    className="text-body text-foreground hover:text-accent link-hover w-fit -mx-2 -my-1"
+                    className="text-[15px] leading-[140%] text-foreground hover:text-accent link-hover w-fit -mx-2 -my-1"
                   >
                     {item.value}
                   </a>
                 ) : (
-                  <p className="text-body text-foreground">{item.value}</p>
+                  <p className="text-[15px] leading-[140%] text-foreground">{item.value}</p>
                 )}
               </dd>
             </div>
@@ -145,18 +144,24 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-3 pt-12">
+    <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-3 pt-12 font-mono uppercase">
       <nav className="flex flex-col gap-3">
         {navItems.map((item) => {
           const isActive =
-            !item.external && pathname.startsWith(item.href);
+            !item.external &&
+            (item.href === "/"
+              ? pathname === "/"
+              : pathname === item.href ||
+                pathname.startsWith(`${item.href}/`));
 
           if (item.external) {
             return (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-body text-muted hover:text-foreground link-hover w-fit"
+                target="_blank"
+                rel="noreferrer"
+                className="text-[15px] leading-[140%] text-muted hover:text-foreground link-hover w-fit"
               >
                 {item.label}
               </a>
@@ -167,7 +172,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-body link-hover w-fit ${
+              className={`text-[15px] leading-[140%] link-hover w-fit ${
                 isActive
                   ? "text-accent font-medium link-hover-accent"
                   : "text-muted hover:text-foreground"

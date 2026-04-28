@@ -14,6 +14,8 @@ type TileProps = {
   bg?: string;
   invertText?: boolean;
   on: boolean;
+  delay?: number;
+  darkGradient?: string;
   children: React.ReactNode;
 };
 
@@ -23,24 +25,50 @@ function Tile({
   bg,
   invertText,
   on,
+  delay = 0,
+  darkGradient,
   children,
 }: TileProps) {
   const useInvert = on && invertText;
-  const textColor = useInvert ? "text-foreground-inverse" : "text-foreground";
+  const eyebrowColor = !on
+    ? "text-muted"
+    : useInvert
+      ? "text-foreground-inverse dark:text-white"
+      : "text-foreground";
   const showColor = on && bg;
+  const transitionDelay = on ? `${delay}ms` : "0ms";
   return (
     <div
-      className={`border-overlay rounded-2xl p-6 transition-colors duration-500 ease-out ${
+      className={`relative border-overlay rounded-2xl p-6 transition-colors duration-500 ease-out ${
         showColor ? "" : "bg-background"
       } ${className}`}
-      style={showColor ? { backgroundColor: bg } : undefined}
+      style={{
+        ...(showColor ? { backgroundColor: bg } : {}),
+        transitionDelay,
+      }}
     >
-      {eyebrow ? (
-        <p className={`text-alt transition-colors duration-500 ease-out ${textColor}`}>
-          {eyebrow}
-        </p>
+      {darkGradient ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl hidden dark:block transition-opacity duration-500 ease-out ring-1 ring-inset ring-white/15"
+          style={{
+            backgroundImage: darkGradient,
+            opacity: on ? 1 : 0,
+            transitionDelay,
+          }}
+        />
       ) : null}
-      <div className={eyebrow ? "mt-6" : ""}>{children}</div>
+      <div className="relative">
+        {eyebrow ? (
+          <p
+            className={`text-alt transition-colors duration-500 ease-out ${eyebrowColor}`}
+            style={{ transitionDelay }}
+          >
+            {eyebrow}
+          </p>
+        ) : null}
+        <div className={eyebrow ? "mt-6" : ""}>{children}</div>
+      </div>
     </div>
   );
 }
@@ -65,7 +93,13 @@ export function AboutBody() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div className="md:col-span-3 flex flex-col gap-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Tile eyebrow="ABOUT ME" bg="#FFCBA1" on={on}>
+                <Tile
+                  eyebrow="ABOUT ME"
+                  bg="#FFCBA1"
+                  on={on}
+                  delay={180}
+                  darkGradient="radial-gradient(at 100% 0%, #171718 45%, #89254C 90%, #FF9193 120%)"
+                >
                   <p className="text-body text-foreground">
                     ✼ Greetings. I&apos;m Harsh, 26, born and live in Delhi,
                     India.
@@ -77,7 +111,13 @@ export function AboutBody() {
                   </p>
                 </Tile>
 
-                <Tile eyebrow="TOOLS" bg="#F6D890" on={on}>
+                <Tile
+                  eyebrow="TOOLS"
+                  bg="#F6D890"
+                  on={on}
+                  delay={0}
+                  darkGradient="radial-gradient(at 0% 0%, #171718 35%, #522311 70%, #C99A59 100%)"
+                >
                   <p className="text-body text-foreground">
                     My practice lives in what comes before production and what
                     gets delivered.
@@ -89,11 +129,19 @@ export function AboutBody() {
                 </Tile>
               </div>
 
-              <Tile eyebrow="PHILOSOPHY" bg="#84A1F0" invertText on={on}>
+              <Tile
+                eyebrow="PHILOSOPHY"
+                bg="#84A1F0"
+                invertText
+                on={on}
+                delay={150}
+                darkGradient="radial-gradient(at 50% 0%, #0E0E18 40%, #0F2E5A 70%, #365B8E 100%)"
+              >
                 <p
                   className={`text-body transition-colors duration-500 ease-out ${
-                    on ? "text-foreground-inverse" : "text-foreground"
+                    on ? "text-foreground-inverse dark:text-white" : "text-foreground"
                   }`}
+                  style={{ transitionDelay: on ? "150ms" : "0ms" }}
                 >
                   Design should disappear into use, so that the people who
                   touch it never know there was a problem it solved. As
@@ -119,7 +167,14 @@ export function AboutBody() {
                   src="/about/map.png"
                   alt="Map of Delhi, India"
                   fill
-                  className="object-cover"
+                  className="object-cover block dark:hidden"
+                  sizes="(min-width: 768px) 25vw, 100vw"
+                />
+                <Image
+                  src="/about/map_dark.png"
+                  alt="Map of Delhi, India"
+                  fill
+                  className="object-cover hidden dark:block"
                   sizes="(min-width: 768px) 25vw, 100vw"
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
@@ -129,7 +184,10 @@ export function AboutBody() {
 
           <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] gap-3">
             <CameraReel
-              bg={on ? undefined : "#FFFFFF"}
+              on={on}
+              bg={on ? undefined : "var(--background)"}
+              transitionDelay={on ? "320ms" : "0ms"}
+              darkGradient="radial-gradient(circle at 100% 100%, #84A1F0 0%, var(--surface) 75%)"
               images={[
                 {
                   src: "/carousel/carousel1.png",
@@ -155,7 +213,13 @@ export function AboutBody() {
             />
 
             <div className="flex flex-col gap-3">
-              <Tile eyebrow="LORE" bg="#C6E6C1" on={on}>
+              <Tile
+                eyebrow="LORE"
+                bg="#C6E6C1"
+                on={on}
+                delay={100}
+                darkGradient="radial-gradient(ellipse at 50% 100%, #4C765E 0%, #1F392C 41%, #171718 100%)"
+              >
                 <p className="text-body text-foreground">
                   My non-Diet-Coke-fueled hours often look like:
                 </p>
@@ -170,7 +234,13 @@ export function AboutBody() {
                 </ul>
               </Tile>
 
-              <Tile eyebrow="WE SHOULD TALK" bg="#F6ECD9" on={on}>
+              <Tile
+                eyebrow="WE SHOULD TALK"
+                bg="#F6ECD9"
+                on={on}
+                delay={250}
+                darkGradient="radial-gradient(at 50% 0%, #171718 0%, #46241A 66%, #EFB18A 100%)"
+              >
                 <p className="text-body text-foreground">
                   Have something you want to pick my brain about? Interested in
                   a collab? We should talk.
