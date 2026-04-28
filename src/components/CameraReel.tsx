@@ -64,7 +64,7 @@ export function CameraReel({
 
   return (
     <div
-      className={`border-overlay rounded-2xl p-1 flex flex-col ${
+      className={`border-overlay rounded-2xl p-1 flex flex-col transition-colors duration-500 ease-out ${
         bg ? "" : "bg-fill-secondary"
       } ${className}`}
       style={bg ? { backgroundColor: bg } : undefined}
