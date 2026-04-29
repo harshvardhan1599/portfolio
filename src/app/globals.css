@@ -207,11 +207,19 @@ body::after  { right: 0; }
 }
 
 .t-icon-swap {
+  display: none;
   position: relative;
   --icon-swap-dur: 200ms;
   --icon-swap-blur: 2px;
   --icon-swap-start-scale: 0.25;
   --icon-swap-ease: ease-in-out;
+}
+@media (max-width: 639.98px) {
+  .t-icon-swap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 .t-icon-swap .t-icon {
   position: absolute;

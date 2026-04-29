@@ -159,7 +159,7 @@ export function Header() {
             <span>HARSH VARDHAN SINGH</span>
           )}
         </nav>
-        <nav className="hidden sm:flex min-[1400px]:hidden items-center gap-1 font-mono uppercase">
+        <nav className="hidden sm:flex xl:hidden items-center gap-1 font-mono uppercase">
           {navItems.map((item) => {
             const cls = navItemClass(isActive(item));
             if (item.external) {
@@ -189,7 +189,7 @@ export function Header() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="hidden max-sm:inline-flex t-icon-swap text-foreground h-8 w-8 rounded-full"
+            className="t-icon-swap text-foreground h-8 w-8 rounded-full"
             data-state={menuOpen ? "b" : "a"}
           >
             <span className="t-icon" data-icon="a">
