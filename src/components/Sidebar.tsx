@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type NavItem =
+export type NavItem =
   | { href: string; label: string; external?: false }
   | { href: string; label: string; external: true };
 
-const navItems: NavItem[] = [
+export const navItems: NavItem[] = [
   { href: "/", label: "Work" },
   { href: "/about", label: "About Me" },
   { href: "/resume.pdf", label: "Resume", external: true },
@@ -88,7 +88,7 @@ export function Sidebar() {
 
   if (caseStudy) {
     return (
-      <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-8 pt-12 font-mono uppercase">
+      <aside className="fixed top-16 left-16 hidden min-[1400px]:flex flex-col gap-8 pt-12 font-mono uppercase">
         <Link
           href={caseStudy.backHref}
           className="text-[15px] leading-[140%] text-muted hover:text-foreground link-hover w-fit inline-flex items-center gap-1.5 -mx-2 -my-1"
@@ -144,7 +144,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="fixed top-16 left-16 hidden md:flex flex-col gap-3 pt-12 font-mono uppercase">
+    <aside className="fixed top-16 left-16 hidden min-[1400px]:flex flex-col gap-3 pt-12 font-mono uppercase">
       <nav className="flex flex-col gap-3">
         {navItems.map((item) => {
           const isActive =

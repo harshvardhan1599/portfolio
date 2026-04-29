@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { navItems } from "@/components/Sidebar";
 
 const projectNames: Record<string, string> = {
   "/work/sensei-agent": "Sensei Agent",
@@ -77,8 +78,35 @@ function Logo() {
   );
 }
 
+function HamburgerIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M3 6h14M3 10h14M3 14h14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path
+        d="M5 5l10 10M15 5L5 15"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function Header() {
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
   const pathname = usePathname();
   const projectName = projectNames[pathname];
@@ -93,27 +121,123 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const navItemClass = (isActive: boolean) =>
+    `text-[15px] leading-[140%] link-hover ${
+      isActive
+        ? "text-accent font-medium link-hover-accent"
+        : "text-muted hover:text-foreground"
+    }`;
+
+  function isActive(item: (typeof navItems)[number]) {
+    if (item.external) return false;
+    if (item.href === "/") return pathname === "/";
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  }
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-10 border-b border-dashed border-border mx-12 px-5 py-4 flex items-center justify-between bg-background transition-transform duration-300 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-10 border-b border-dashed border-border mx-5 sm:mx-12 bg-background transition-transform duration-300 ease-out ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <nav className="text-alt text-muted flex items-center gap-2">
-        <Logo />
-        {projectName ? (
-          <>
-            <Link href="/" className="hover:text-foreground transition-colors">
-              HARSH VARDHAN SINGH
-            </Link>
-            <CaretRight />
-            <span className="text-foreground">{projectName.toUpperCase()}</span>
-          </>
-        ) : (
-          <span>HARSH VARDHAN SINGH</span>
-        )}
-      </nav>
-      <ThemeToggle />
+      <div className="px-5 py-4 flex items-center justify-between">
+        <nav className="text-alt text-muted flex items-center gap-2">
+          <Logo />
+          {projectName ? (
+            <>
+              <Link href="/" className="hover:text-foreground transition-colors">
+                HARSH VARDHAN SINGH
+              </Link>
+              <CaretRight />
+              <span className="text-foreground">{projectName.toUpperCase()}</span>
+            </>
+          ) : (
+            <span>HARSH VARDHAN SINGH</span>
+          )}
+        </nav>
+        <nav className="hidden sm:flex min-[1400px]:hidden items-center gap-1 font-mono uppercase">
+          {navItems.map((item) => {
+            const cls = navItemClass(isActive(item));
+            if (item.external) {
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cls}
+                >
+                  {item.label}
+                </a>
+              );
+            }
+            return (
+              <Link key={item.href} href={item.href} className={cls}>
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="hidden max-sm:inline-flex t-icon-swap text-foreground h-8 w-8 rounded-full"
+            data-state={menuOpen ? "b" : "a"}
+          >
+            <span className="t-icon" data-icon="a">
+              <HamburgerIcon />
+            </span>
+            <span className="t-icon" data-icon="b">
+              <CloseIcon />
+            </span>
+          </button>
+        </div>
+      </div>
+      <div
+        className={`hidden max-sm:grid transition-[grid-template-rows] duration-300 ease-out ${
+          menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <nav className="flex flex-col items-start gap-2 px-5 pb-5 font-mono uppercase">
+            {navItems.map((item) => {
+              const cls = navItemClass(isActive(item));
+              if (item.external) {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={cls}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cls}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
     </header>
   );
 }

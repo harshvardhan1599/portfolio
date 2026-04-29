@@ -88,6 +88,16 @@
   --hover-accent: #453715;
 }
 
+.theme-about {
+  --accent: #0D99FF;
+  --hover-accent: #E5F3FE;
+}
+
+.dark.theme-about {
+  --accent: #0D99FF;
+  --hover-accent: #0F2F4A;
+}
+
 body {
   background-color: var(--page-bg);
   color: var(--foreground);
@@ -105,11 +115,17 @@ body::after {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 48px;
+  width: 20px;
   background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
   background-size: 4px 4px;
   pointer-events: none;
   z-index: 0;
+}
+@media (min-width: 640px) {
+  body::before,
+  body::after {
+    width: 48px;
+  }
 }
 body::before { left: 0; }
 body::after  { right: 0; }
@@ -188,6 +204,43 @@ body::after  { right: 0; }
 
 .dark .border-overlay {
   outline: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.t-icon-swap {
+  position: relative;
+  --icon-swap-dur: 200ms;
+  --icon-swap-blur: 2px;
+  --icon-swap-start-scale: 0.25;
+  --icon-swap-ease: ease-in-out;
+}
+.t-icon-swap .t-icon {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity var(--icon-swap-dur) var(--icon-swap-ease),
+    filter var(--icon-swap-dur) var(--icon-swap-ease),
+    transform var(--icon-swap-dur) var(--icon-swap-ease);
+  will-change: opacity, filter, transform;
+}
+.t-icon-swap[data-state="a"] .t-icon[data-icon="a"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="b"] {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+.t-icon-swap[data-state="a"] .t-icon[data-icon="b"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="a"] {
+  opacity: 0;
+  filter: blur(var(--icon-swap-blur));
+  transform: scale(var(--icon-swap-start-scale));
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-icon-swap .t-icon {
+    transition: none !important;
+  }
 }
 
 .bg-diagonal-lines {

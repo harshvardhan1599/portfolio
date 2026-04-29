@@ -10,7 +10,7 @@ import "./globals.css";
 
 const themeScript = `(function(){try{if(localStorage.getItem("theme")==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
 
-const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
+const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent","/about":"theme-about"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",
@@ -61,11 +61,13 @@ export default function RootLayout({
         <CustomCursor />
         <Header />
         <Sidebar />
-        <div className="mx-auto w-full max-w-4xl pt-16 min-h-screen bg-background border border-dashed border-border">
-          <main className="flex flex-col">
-            {children}
-            <SiteFooter />
-          </main>
+        <div className="px-5 sm:px-12">
+          <div className="mx-auto w-full max-w-4xl pt-16 min-h-screen bg-background border-y min-[992px]:border-x border-dashed border-border">
+            <main className="flex flex-col">
+              {children}
+              <SiteFooter />
+            </main>
+          </div>
         </div>
       </body>
     </html>

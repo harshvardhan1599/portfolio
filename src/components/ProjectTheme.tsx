@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 export const projectThemes: Record<string, string> = {
   "/work/swadesh": "theme-swadesh",
   "/work/sensei-agent": "theme-sensei-agent",
+  "/about": "theme-about",
 };
 
 export function ProjectTheme() {
