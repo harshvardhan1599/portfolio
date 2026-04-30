@@ -22,32 +22,34 @@ export default function Home() {
             If it shapes how the product feels, it&apos;s on me.
           </p> */}
 
-          <div className="mt-6">
-            <table className="w-[80%]">
-              <tbody>
-                {experiences.map((exp) => (
-                  <tr
-                    key={exp.year + exp.company}
-                  >
-                    <td className="text-alt py-2 pr-2 text-muted whitespace-nowrap">
-                      {exp.year}
-                    </td>
-                    <td className="text-body py-2 pr-2 font-medium text-foreground">
-                      {exp.url ? (
-                        <a href={exp.url} target="_blank" rel="noopener noreferrer" className="link-hover">
-                          {exp.company}
-                        </a>
-                      ) : (
-                        exp.company
-                      )}
-                    </td>
-                    <td className="text-body py-2 text-muted">
-                      {exp.role}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-6 w-full sm:w-[80%]">
+            {experiences.map((exp) => (
+              <div
+                key={exp.year + exp.company}
+                className="grid grid-cols-[auto_1fr] gap-x-12 py-2"
+              >
+                <div className="text-alt text-muted whitespace-nowrap">
+                  {exp.year}
+                </div>
+                <div className="flex flex-col gap-y-1 sm:flex-row sm:gap-y-0 sm:gap-x-12">
+                  <div className="text-body font-medium text-foreground">
+                    {exp.url ? (
+                      <a
+                        href={exp.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="link-hover inline-block w-fit -mx-2 -my-1"
+                      >
+                        {exp.company}
+                      </a>
+                    ) : (
+                      exp.company
+                    )}
+                  </div>
+                  <div className="text-body text-muted">{exp.role}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

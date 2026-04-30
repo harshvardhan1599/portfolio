@@ -79,7 +79,7 @@ export function AboutBody() {
   return (
     <article className="flex-1">
       <section className="w-full max-w-4xl">
-        <div className="px-6 pb-8 pt-10 md:px-10 md:pt-12 flex flex-col md:flex-row md:items-center gap-6">
+        <div className="px-6 pb-8 pt-10 md:px-10 md:pt-12 flex flex-row items-center gap-6">
           <h1 className="text-heading-md text-foreground flex-1">
             I&apos;m{" "}
             <SelectionFrame>Harsh Vardhan Singh</SelectionFrame>
@@ -91,7 +91,7 @@ export function AboutBody() {
 
         <div className="px-4 pb-8 flex flex-col gap-3">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div className="md:col-span-3 flex flex-col gap-3">
+            <div className="md:col-span-3 flex flex-col gap-3 order-2 md:order-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Tile
                   eyebrow="ABOUT ME"
@@ -151,8 +151,8 @@ export function AboutBody() {
               </Tile>
             </div>
 
-            <div className="flex flex-col gap-3 h-full">
-              <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-0 overflow-hidden relative">
+            <div className="flex flex-row md:flex-col gap-3 md:h-full order-1 md:order-2">
+              <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-56 md:min-h-0 overflow-hidden relative">
                 <Image
                   src="/about/Me.png"
                   alt="Portrait of Harsh Vardhan Singh"
@@ -162,7 +162,7 @@ export function AboutBody() {
                 />
                 <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
               </div>
-              <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-0 overflow-hidden relative">
+              <div className="border-overlay rounded-2xl bg-fill flex-1 min-h-56 md:min-h-0 overflow-hidden relative">
                 <Image
                   src="/about/map.png"
                   alt="Map of Delhi, India"

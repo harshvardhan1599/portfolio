@@ -145,18 +145,24 @@ export function Header() {
       }`}
     >
       <div className="px-5 py-4 flex items-center justify-between">
-        <nav className="text-alt text-muted flex items-center gap-2">
+        <nav className="text-alt text-muted flex items-center gap-2 min-w-0">
           <Logo />
           {projectName ? (
             <>
-              <Link href="/" className="hover:text-foreground transition-colors">
-                HARSH VARDHAN SINGH
+              <Link
+                href="/"
+                className="hover:text-foreground transition-colors whitespace-nowrap"
+              >
+                <span className="sm:hidden">HARSH</span>
+                <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
               </Link>
               <CaretRight />
-              <span className="text-foreground">{projectName.toUpperCase()}</span>
+              <span className="text-foreground truncate">
+                {projectName.toUpperCase()}
+              </span>
             </>
           ) : (
-            <span>HARSH VARDHAN SINGH</span>
+            <span className="whitespace-nowrap">HARSH VARDHAN SINGH</span>
           )}
         </nav>
         <nav className="hidden sm:flex xl:hidden items-center gap-1 font-mono uppercase">
