@@ -22,16 +22,16 @@ export default function Home() {
             If it shapes how the product feels, it&apos;s on me.
           </p> */}
 
-          <div className="mt-6 w-full sm:w-[80%]">
+          <div className="mt-6 w-full sm:w-[80%] sm:grid sm:grid-cols-[auto_auto_1fr] sm:gap-x-12 sm:gap-y-4">
             {experiences.map((exp) => (
               <div
                 key={exp.year + exp.company}
-                className="grid grid-cols-[auto_1fr] gap-x-12 py-2"
+                className="grid grid-cols-[auto_1fr] gap-x-12 py-2 sm:contents"
               >
                 <div className="text-alt text-muted whitespace-nowrap">
                   {exp.year}
                 </div>
-                <div className="flex flex-col gap-y-1 sm:flex-row sm:gap-y-0 sm:gap-x-12">
+                <div className="flex flex-col gap-y-1 sm:contents">
                   <div className="text-body font-medium text-foreground">
                     {exp.url ? (
                       <a
