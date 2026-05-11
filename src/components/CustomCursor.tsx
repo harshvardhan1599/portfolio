@@ -8,6 +8,7 @@ export function CustomCursor() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState<CursorMode>("default");
+  const [pillLabel, setPillLabel] = useState("Case Study");
 
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -20,8 +21,10 @@ export function CustomCursor() {
         ref.current.style.top = `${e.clientY}px`;
       }
       const target = e.target as HTMLElement;
-      if (target.closest("[data-cursor='case-study']")) {
+      const pillEl = target.closest("[data-cursor='case-study']");
+      if (pillEl) {
         setMode("case-study");
+        setPillLabel(pillEl.getAttribute("data-cursor-label") ?? "Case Study");
       } else if (target.closest("a, button")) {
         setMode("hover");
       } else {
@@ -52,7 +55,7 @@ export function CustomCursor() {
   return (
     <div
       ref={ref}
-      className="pointer-events-none fixed z-50 rounded-full flex items-center justify-center"
+      className="pointer-events-none fixed z-[100] rounded-full flex items-center justify-center"
       style={{
         left: -100,
         top: -100,
@@ -73,7 +76,7 @@ export function CustomCursor() {
           transition: "opacity 200ms ease-out, transform 200ms ease-out",
         }}
       >
-        Case Study
+        {pillLabel}
       </span>
     </div>
   );
