@@ -10,7 +10,7 @@ import "./globals.css";
 
 const themeScript = `(function(){try{if(localStorage.getItem("theme")==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
 
-const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent","/about":"theme-about"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
+const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent","/about":"theme-about","/playground":"theme-playground"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
 
 const inter = Inter({
   variable: "--font-inter",

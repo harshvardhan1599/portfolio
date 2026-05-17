@@ -7,6 +7,7 @@ export const projectThemes: Record<string, string> = {
   "/work/swadesh": "theme-swadesh",
   "/work/sensei-agent": "theme-sensei-agent",
   "/about": "theme-about",
+  "/playground": "theme-playground",
 };
 
 export function ProjectTheme() {

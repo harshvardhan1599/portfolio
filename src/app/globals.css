@@ -98,6 +98,16 @@
   --hover-accent: #0F2F4A;
 }
 
+.theme-playground {
+  --accent: #076E6A;
+  --hover-accent: #E8F1F0;
+}
+
+.dark.theme-playground {
+  --accent: #076E6A;
+  --hover-accent: #11332F;
+}
+
 body {
   background-color: var(--page-bg);
   color: var(--foreground);
