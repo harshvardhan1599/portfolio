@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DitherTile } from "@/components/DitherTile";
+import { StaticTile } from "@/components/StaticTile";
 
 export const metadata: Metadata = {
   title: "Playground",
@@ -19,8 +20,50 @@ export default function PlaygroundPage() {
         </div>
 
         <div className="mt-10 px-6 pb-16 md:px-10 md:mt-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <DitherTile />
+          <div className="flex flex-col gap-10 md:grid md:grid-cols-12 md:gap-y-0">
+            <div className="md:col-start-1 md:col-span-7">
+              <DitherTile />
+            </div>
+            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+              <StaticTile
+                src="/playground/saturn-studios.png"
+                alt="Saturn Studios branding"
+                caption="Branding • Saturn Studios"
+                width={1755}
+                height={988}
+                side="right"
+              />
+            </div>
+            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+              <StaticTile
+                src="/playground/gyft.png"
+                alt="Gyft branding concept"
+                caption="Branding concept • Gyft"
+                width={1170}
+                height={659}
+                side="left"
+              />
+            </div>
+            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+              <StaticTile
+                src="/playground/presfit.png"
+                alt="Presfit branding"
+                caption="Branding • Presfit"
+                width={1370}
+                height={659}
+                side="right"
+              />
+            </div>
+            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+              <StaticTile
+                src="/playground/nu-ventures.png"
+                alt="Nu Ventures branding concept"
+                caption="Branding concept • Nu Ventures"
+                width={1170}
+                height={659}
+                side="left"
+              />
+            </div>
           </div>
         </div>
       </section>
