@@ -26,42 +26,53 @@ export default function PlaygroundPage() {
             </div>
             <div className="md:col-start-6 md:col-span-7 md:-mt-12">
               <StaticTile
+                src="/playground/delhi-daily.png"
+                alt="Delhi, Daily — a daily generative study of flowers shaped by Delhi's weather"
+                caption="Generative • Delhi, Daily"
+                width={2000}
+                height={1339}
+                side="right"
+                href="https://pixel-grid-drab.vercel.app/"
+              />
+            </div>
+            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+              <StaticTile
                 src="/playground/saturn-studios.png"
                 alt="Saturn Studios branding"
                 caption="Branding • Saturn Studios"
                 width={1755}
                 height={988}
-                side="right"
+                side="left"
               />
             </div>
-            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
               <StaticTile
                 src="/playground/gyft.png"
                 alt="Gyft branding concept"
                 caption="Branding concept • Gyft"
                 width={1170}
                 height={659}
-                side="left"
+                side="right"
               />
             </div>
-            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
               <StaticTile
                 src="/playground/presfit.png"
                 alt="Presfit branding"
                 caption="Branding • Presfit"
                 width={1370}
                 height={659}
-                side="right"
+                side="left"
               />
             </div>
-            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
               <StaticTile
                 src="/playground/nu-ventures.png"
                 alt="Nu Ventures branding concept"
                 caption="Branding concept • Nu Ventures"
                 width={1170}
                 height={659}
-                side="left"
+                side="right"
               />
             </div>
           </div>

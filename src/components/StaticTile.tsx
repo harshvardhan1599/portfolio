@@ -12,6 +12,7 @@ type StaticTileProps = {
   width: number;
   height: number;
   side?: "left" | "right";
+  href?: string;
 };
 
 export function StaticTile({
@@ -21,6 +22,7 @@ export function StaticTile({
   width,
   height,
   side = "left",
+  href,
 }: StaticTileProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isLifted, setIsLifted] = useState(false);
@@ -40,26 +42,43 @@ export function StaticTile({
 
   const origin = side === "right" ? "origin-top-right" : "origin-top-left";
 
+  const figure = (
+    <figure
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      className={`flex flex-col gap-3 relative transition-transform duration-500 ease-out ${origin} ${
+        isLifted ? "z-50" : "z-0"
+      } ${isHovered ? "scale-[1.04]" : "scale-100"}`}
+    >
+      <div className="rounded-none bg-fill overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className="w-full h-auto block"
+        />
+      </div>
+      <figcaption className="text-alt-sm text-muted">{caption}</figcaption>
+    </figure>
+  );
+
   return (
     <>
-      <figure
-        onMouseEnter={handleEnter}
-        onMouseLeave={handleLeave}
-        className={`flex flex-col gap-3 relative transition-transform duration-500 ease-out ${origin} ${
-          isLifted ? "z-50" : "z-0"
-        } ${isHovered ? "scale-[1.04]" : "scale-100"}`}
-      >
-        <div className="rounded-none bg-fill overflow-hidden">
-          <Image
-            src={src}
-            alt={alt}
-            width={width}
-            height={height}
-            className="w-full h-auto block"
-          />
-        </div>
-        <figcaption className="text-alt-sm text-muted">{caption}</figcaption>
-      </figure>
+      {href ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="case-study"
+          data-cursor-label="View Project"
+          className="block"
+        >
+          {figure}
+        </a>
+      ) : (
+        figure
+      )}
 
       <div
         aria-hidden

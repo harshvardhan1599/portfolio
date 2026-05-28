@@ -34,12 +34,27 @@ const ovo = Ovo({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://harshvardhan.work"),
   title: {
     default: "Portfolio — Designer",
     template: "%s — Portfolio",
   },
   description:
     "Designer portfolio showcasing branding, product, and editorial projects.",
+  openGraph: {
+    title: "Portfolio — Designer",
+    description:
+      "Designer portfolio showcasing branding, product, and editorial projects.",
+    type: "website",
+    url: "https://harshvardhan.work",
+    siteName: "Harshvardhan Singh",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Portfolio — Designer",
+    description:
+      "Designer portfolio showcasing branding, product, and editorial projects.",
+  },
 };
 
 export default function RootLayout({
