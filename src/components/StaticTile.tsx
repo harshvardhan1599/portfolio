@@ -41,6 +41,7 @@ export function StaticTile({
   }
 
   const origin = side === "right" ? "origin-top-right" : "origin-top-left";
+  const isVideo = /\.(mp4|webm|mov)$/i.test(src);
 
   const figure = (
     <figure
@@ -51,15 +52,31 @@ export function StaticTile({
       } ${isHovered ? "scale-[1.04]" : "scale-100"}`}
     >
       <div className="rounded-none bg-fill overflow-hidden">
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className="w-full h-auto block"
-        />
+        {isVideo ? (
+          <video
+            src={src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            aria-label={alt}
+            className="w-full h-auto block"
+          />
+        ) : (
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            className="w-full h-auto block"
+          />
+        )}
       </div>
-      <figcaption className="text-alt-sm text-muted">{caption}</figcaption>
+      <figcaption
+        className={`text-alt-sm text-muted ${side === "right" ? "text-right" : ""}`}
+      >
+        {caption}
+      </figcaption>
     </figure>
   );
 

@@ -26,7 +26,7 @@ export default function PlaygroundPage() {
             </div>
             <div className="md:col-start-6 md:col-span-7 md:-mt-12">
               <StaticTile
-                src="/playground/delhi-daily.png"
+                src="/playground/pixel-grid.mp4"
                 alt="Delhi, Daily — a daily generative study of flowers shaped by Delhi's weather"
                 caption="Generative • Delhi, Daily"
                 width={2000}
