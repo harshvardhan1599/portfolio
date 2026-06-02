@@ -6,7 +6,6 @@ import { CameraReel } from "@/components/CameraReel";
 import { CopyEmailButton } from "@/components/CopyEmailButton";
 import { SelectionFrame } from "@/components/SelectionFrame";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons";
-import { Toggle } from "@/components/Toggle";
 
 type TileProps = {
   eyebrow?: string;
@@ -39,8 +38,8 @@ function Tile({
   const transitionDelay = on ? `${delay}ms` : "0ms";
   return (
     <div
-      className={`relative border-overlay rounded-2xl p-6 transition-colors duration-500 ease-out ${
-        showColor ? "" : "bg-background"
+      className={`relative border-overlay rounded-2xl p-8 transition-colors duration-500 ease-out ${
+        showColor ? "" : "bg-card"
       } ${className}`}
       style={{
         ...(showColor ? { backgroundColor: bg } : {}),
@@ -74,19 +73,36 @@ function Tile({
 }
 
 export function AboutBody() {
-  const [on, setOn] = useState(false);
+  const [on] = useState(false);
 
   return (
     <article className="flex-1">
       <section className="w-full max-w-4xl">
-        <div className="px-6 pb-8 pt-10 md:px-10 md:pt-12 flex flex-row items-center gap-6">
-          <h1 className="text-heading-md text-foreground flex-1">
-            I&apos;m{" "}
-            <SelectionFrame>Harsh Vardhan Singh</SelectionFrame>
-            , a product designer &amp; builder, driven by curiosity and diet
-            coke.
-          </h1>
-          <Toggle on={on} onChange={setOn} ariaLabel="Toggle" />
+        <div className="px-4 py-3">
+          <div className="relative overflow-hidden rounded-2xl border-overlay aspect-[3/2] md:aspect-[2/1]">
+            <video
+              src="/about/strips-loop.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-hidden
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent"
+            />
+            <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+              <h1 className="text-heading-md text-white">
+                I&apos;m{" "}
+                <SelectionFrame>Harsh Vardhan Singh</SelectionFrame>, a product
+                designer &amp; builder, driven by curiosity and diet coke.
+              </h1>
+            </div>
+          </div>
         </div>
 
         <div className="px-4 pb-8 flex flex-col gap-3">
@@ -185,7 +201,7 @@ export function AboutBody() {
           <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] gap-3">
             <CameraReel
               on={on}
-              bg={on ? undefined : "var(--background)"}
+              bg={on ? undefined : "var(--card)"}
               transitionDelay={on ? "320ms" : "0ms"}
               darkGradient="radial-gradient(circle at 100% 100%, #84A1F0 0%, var(--surface) 75%)"
               images={[

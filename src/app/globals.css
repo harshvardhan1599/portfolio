@@ -17,6 +17,7 @@
   --fill-hover: #D8D8D8;
   --cursor-pill: #333333;
   --foreground-inverse: #FFFFFF;
+  --card: #FFFFFF;
 }
 
 .dark {
@@ -34,6 +35,7 @@
   --fill-hover: #434343;
   --cursor-pill: #E8E8E8;
   --foreground-inverse: #32404F;
+  --card: var(--background);
 }
 
 @theme inline {
@@ -51,6 +53,7 @@
   --color-fill-hover: var(--fill-hover);
   --color-cursor-pill: var(--cursor-pill);
   --color-foreground-inverse: var(--foreground-inverse);
+  --color-card: var(--card);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-ovo), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
