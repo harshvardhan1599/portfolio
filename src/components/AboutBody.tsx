@@ -1,11 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CameraReel } from "@/components/CameraReel";
 import { CopyEmailButton } from "@/components/CopyEmailButton";
 import { SelectionFrame } from "@/components/SelectionFrame";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons";
+import GradientBackground, {
+  type GradientBackgroundHandle,
+} from "@/components/GradientBackground";
+import GradientSettings from "@/components/GradientSettings";
 
 type TileProps = {
   eyebrow?: string;
@@ -74,25 +78,16 @@ function Tile({
 
 export function AboutBody() {
   const [on] = useState(false);
+  const gradient = useRef<GradientBackgroundHandle>(null);
 
   return (
     <article className="flex-1">
       <section className="w-full max-w-4xl">
-        <div className="px-4 py-3">
+        <div className="relative px-4 pt-4 pb-3">
           <div className="relative overflow-hidden rounded-2xl border-overlay aspect-[3/2] md:aspect-[2/1]">
-            <video
-              src="/about/strips-loop.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              aria-hidden
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent"
+            <GradientBackground
+              ref={gradient}
+              style={{ position: "absolute", inset: 0, zIndex: 0 }}
             />
             <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
@@ -103,6 +98,7 @@ export function AboutBody() {
               </h1>
             </div>
           </div>
+          <GradientSettings target={gradient} />
         </div>
 
         <div className="px-4 pb-8 flex flex-col gap-3">
