@@ -32,12 +32,24 @@ const ALIGN_MAX = { amp: 0.37, amp2: 0.08 };
 
 // palette-only presets (mirrors src/strips-config.js)
 const PRESETS: Record<string, string[]> = {
+  Opal: ["#f4f4f4", "#f4f4f4", "#decddc", "#f6b793", "#faaaab", "#bcbdfe"],
+  Nocturne: ["#ff9c79", "#e93855", "#ee85e2", "#5662f2", "#014677", "#02020a"],
   Periwinkle: ["#aecbf5", "#c2cbf1", "#d2c9ec", "#e2d4e8", "#ead9e6", "#6f86dd"],
   Sunrise: ["#fff4e6", "#ffd29a", "#ff9d6c", "#f0635e", "#b6477f", "#8a5fd0"],
   Mint: ["#f0fff7", "#9ef0cf", "#34c2b6", "#3a86c8", "#6f7be0", "#c9a0e8"],
 };
 
-const DEFAULT_STATE = { preset: "Periwinkle", align: 0.5, wave: 0.35 };
+// Default preset is theme-aware: Opal in light mode, Nocturne in dark.
+const LIGHT_PRESET = "Opal";
+const DARK_PRESET = "Nocturne";
+const DEFAULT_ALIGN = 0.5;
+const DEFAULT_WAVE = 0.35;
+
+const isDarkTheme = () =>
+  typeof document !== "undefined" &&
+  document.documentElement.classList.contains("dark");
+
+const defaultPreset = () => (isDarkTheme() ? DARK_PRESET : LIGHT_PRESET);
 
 // amp pair for a given alignment value
 const ampFor = (align: number) => ({
@@ -55,17 +67,34 @@ export interface GradientSettingsProps {
 
 export default function GradientSettings({ target }: GradientSettingsProps) {
   const [open, setOpen] = useState(false);
-  const [preset, setPreset] = useState(DEFAULT_STATE.preset);
-  const [align, setAlign] = useState(DEFAULT_STATE.align);
-  const [wave, setWave] = useState(DEFAULT_STATE.wave);
+  // Lazy init from the theme so the very first setConfig already pushes the
+  // right palette (no light->dark flash on a dark-mode load). On the server
+  // `document` is undefined, so this falls back to the light default.
+  const [preset, setPreset] = useState(defaultPreset);
+  const [align, setAlign] = useState(DEFAULT_ALIGN);
+  const [wave, setWave] = useState(DEFAULT_WAVE);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+  // true once the visitor manually picks a swatch — after that we stop
+  // following the theme so we don't clobber their choice.
+  const touchedRef = useRef(false);
 
   // push the current state to the gradient on mount and whenever it changes
   useEffect(() => {
     target.current?.setConfig({ palette: PRESETS[preset], wave, ...ampFor(align) });
   }, [target, preset, align, wave]);
+
+  // follow light/dark toggles (the site sets a `.dark` class on <html>) until
+  // the visitor has manually chosen a preset.
+  useEffect(() => {
+    const root = document.documentElement;
+    const obs = new MutationObserver(() => {
+      if (!touchedRef.current) setPreset(defaultPreset());
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
 
   // click-outside + Escape close the panel
   useEffect(() => {
@@ -87,9 +116,10 @@ export default function GradientSettings({ target }: GradientSettingsProps) {
   }, [open]);
 
   const reset = () => {
-    setPreset(DEFAULT_STATE.preset);
-    setAlign(DEFAULT_STATE.align);
-    setWave(DEFAULT_STATE.wave);
+    touchedRef.current = false;
+    setPreset(defaultPreset());
+    setAlign(DEFAULT_ALIGN);
+    setWave(DEFAULT_WAVE);
   };
 
   // grey-track / white-fill pill, with the knob sitting at the value
@@ -138,12 +168,18 @@ export default function GradientSettings({ target }: GradientSettingsProps) {
               <button
                 key={name}
                 type="button"
+                // The default selection is theme-derived, which the server
+                // (no theme) can't match — suppress that one-time hydration diff.
+                suppressHydrationWarning
                 className={`gs-swatch${preset === name ? " selected" : ""}`}
                 title={name}
                 aria-label={name}
                 aria-pressed={preset === name}
                 style={{ background: swatchBg(p) }}
-                onClick={() => setPreset(name)}
+                onClick={() => {
+                  touchedRef.current = true;
+                  setPreset(name);
+                }}
               />
             ))}
           </div>

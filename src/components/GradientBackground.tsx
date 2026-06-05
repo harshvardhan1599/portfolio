@@ -77,14 +77,15 @@ export const DEFAULTS: GradientConfig = {
   wave: 0.35, // base time frequency (seamless loop uses w and 2w)
   grain: 0.095, // film grain
   parallax: 0.04, // mouse parallax strength (0 disables)
-  // cyclic palette, one period top -> bottom (last stop loops to the first)
+  // cyclic palette, one period top -> bottom (last stop loops to the first).
+  // Matches the "Opal" preset in GradientSettings (the default shown on load).
   palette: [
-    "#aecbf5", // top light periwinkle
-    "#c2cbf1", // blue-lavender
-    "#d2c9ec", // lavender
-    "#e2d4e8", // pale lavender-pink
-    "#ead9e6", // palest pink
-    "#6f86dd", // deep periwinkle (bottom) -> loops to top
+    "#f4f4f4", // top near-white
+    "#f4f4f4", // near-white
+    "#decddc", // mauve
+    "#f6b793", // peach
+    "#faaaab", // salmon-pink
+    "#bcbdfe", // light periwinkle (bottom) -> loops to top
   ],
 };
 

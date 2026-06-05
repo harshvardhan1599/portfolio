@@ -91,7 +91,7 @@ export function AboutBody() {
             />
             <div className="pointer-events-none absolute inset-0 rounded-2xl border border-black/10 dark:border-white/10" />
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-              <h1 className="text-heading-md text-white">
+              <h1 className="text-heading-md text-[#1a1c3a] dark:text-white">
                 I&apos;m{" "}
                 <SelectionFrame>Harsh Vardhan Singh</SelectionFrame>, a product
                 designer &amp; builder, driven by curiosity and diet coke.
