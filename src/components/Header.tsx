@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { navItems } from "@/components/Sidebar";
 
 const projectNames: Record<string, string> = {
@@ -104,6 +103,33 @@ function CloseIcon() {
   );
 }
 
+function ContactRing() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      className="shrink-0"
+    >
+      <path
+        d="M14 8a6 6 0 1 1-1.76-4.24"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M14 2.5V6h-3.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function Header() {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -156,82 +182,93 @@ export function Header() {
     return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }
 
+  const links = navItems.filter((item) => !item.external);
+  const contact = navItems.find((item) => item.external);
+
+  // Homepage renders its own nav inside the hero (see NavMenu in page.tsx),
+  // so the global fixed header is suppressed there to avoid a duplicate menu.
+  if (pathname === "/") return null;
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-10 border-b border-dashed border-border mx-5 sm:mx-12 bg-background transition-transform duration-300 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-20 transition-transform duration-300 ease-out ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <div ref={barRef} className="px-5 py-4 flex items-center justify-between">
-        <nav className="text-alt text-muted flex items-center gap-2 min-w-0">
-          <Logo />
-          {projectName ? (
-            <>
-              <Link
-                href="/"
-                className="hover:text-foreground transition-colors whitespace-nowrap"
-              >
-                <span className="sm:hidden">HARSH</span>
-                <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
-              </Link>
-              <CaretRight />
-              <span className="text-foreground truncate">
-                {projectName.toUpperCase()}
-              </span>
-            </>
-          ) : (
-            <span className="whitespace-nowrap">HARSH VARDHAN SINGH</span>
+      <div
+        ref={barRef}
+        className="flex items-center justify-between gap-4 px-6 py-5 md:px-14"
+      >
+        {/* Left: breadcrumb, case-study routes only */}
+        {projectName ? (
+          <nav className="text-alt text-muted flex min-w-0 items-center gap-2">
+            <Logo />
+            <Link
+              href="/"
+              className="hover:text-foreground transition-colors whitespace-nowrap"
+            >
+              <span className="sm:hidden">HARSH</span>
+              <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
+            </Link>
+            <CaretRight />
+            <span className="text-foreground truncate">
+              {projectName.toUpperCase()}
+            </span>
+          </nav>
+        ) : (
+          <span aria-hidden className="min-w-0" />
+        )}
+
+        {/* Right: desktop nav pill */}
+        <nav className="hidden items-center gap-1 rounded-full border border-border bg-surface/80 p-1.5 pl-2 backdrop-blur-sm sm:flex">
+          {links.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={navItemClass(isActive(item))}
+            >
+              {item.label}
+            </Link>
+          ))}
+          {contact && (
+            <a
+              href={contact.href}
+              target="_blank"
+              rel="noreferrer"
+              className="ml-1 flex items-center gap-2 rounded-full bg-foreground px-4 py-1.5 text-[15px] leading-[140%] text-background transition-opacity hover:opacity-90"
+            >
+              {contact.label}
+              <ContactRing />
+            </a>
           )}
         </nav>
-        <nav className="hidden sm:flex xl:hidden items-center gap-1 font-mono uppercase">
-          {navItems.map((item) => {
-            const cls = navItemClass(isActive(item));
-            if (item.external) {
-              return (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={cls}
-                >
-                  {item.label}
-                </a>
-              );
-            }
-            return (
-              <Link key={item.href} href={item.href} className={cls}>
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            className="t-icon-swap text-foreground h-8 w-8 rounded-full"
-            data-state={menuOpen ? "b" : "a"}
-          >
-            <span className="t-icon" data-icon="a">
-              <HamburgerIcon />
-            </span>
-            <span className="t-icon" data-icon="b">
-              <CloseIcon />
-            </span>
-          </button>
-        </div>
+
+        {/* Right: mobile toggle */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          className="t-icon-swap text-foreground h-9 w-9 rounded-full border border-border bg-surface/80 backdrop-blur-sm sm:hidden"
+          data-state={menuOpen ? "b" : "a"}
+        >
+          <span className="t-icon" data-icon="a">
+            <HamburgerIcon />
+          </span>
+          <span className="t-icon" data-icon="b">
+            <CloseIcon />
+          </span>
+        </button>
       </div>
+
+      {/* Mobile dropdown */}
       <div
         className={`hidden max-sm:grid transition-[grid-template-rows] duration-300 ease-out ${
           menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >
         <div className="overflow-hidden">
-          <nav className="flex flex-col items-start gap-2 px-5 pb-5 font-mono uppercase">
+          <nav className="mx-6 mb-2 flex flex-col items-start gap-1 rounded-2xl border border-border bg-surface p-3">
             {navItems.map((item) => {
               const cls = navItemClass(isActive(item));
               if (item.external) {

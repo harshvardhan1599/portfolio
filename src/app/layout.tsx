@@ -3,13 +3,12 @@ import { Inter, Geist_Mono, Ovo } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter } from "@/components/SiteFooter";
 
-import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { ProjectTheme } from "@/components/ProjectTheme";
 import "./globals.css";
 
-const themeScript = `(function(){try{if(localStorage.getItem("theme")==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
+const themeScript = `(function(){try{document.documentElement.classList.add("dark")}catch(e){}})();`;
 
 const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent","/about":"theme-about","/playground":"theme-playground"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
 
@@ -76,15 +75,10 @@ export default function RootLayout({
         <ProjectTheme />
         <CustomCursor />
         <Header />
-        <Sidebar />
-        <div className="px-5 sm:px-12">
-          <div className="mx-auto w-full max-w-4xl pt-[var(--header-h)] min-h-screen bg-background border-y min-[992px]:border-x border-dashed border-border">
-            <main className="flex flex-col">
-              {children}
-              <SiteFooter />
-            </main>
-          </div>
-        </div>
+        <main className="min-h-screen w-full flex flex-col bg-background">
+          {children}
+          <SiteFooter />
+        </main>
         <Analytics />
       </body>
     </html>

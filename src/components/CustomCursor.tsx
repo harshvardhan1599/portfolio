@@ -9,6 +9,9 @@ export function CustomCursor() {
   const [visible, setVisible] = useState(false);
   const [mode, setMode] = useState<CursorMode>("default");
   const [pillLabel, setPillLabel] = useState("Case Study");
+  // true when the pointer is over a light section (.surface-light), so the
+  // cursor flips to the dark token set (dark dot/pill over the white area).
+  const [onLight, setOnLight] = useState(false);
 
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
@@ -21,6 +24,7 @@ export function CustomCursor() {
         ref.current.style.top = `${e.clientY}px`;
       }
       const target = e.target as HTMLElement;
+      setOnLight(!!target.closest(".surface-light"));
       const pillEl = target.closest("[data-cursor='case-study']");
       if (pillEl) {
         setMode("case-study");
@@ -55,7 +59,9 @@ export function CustomCursor() {
   return (
     <div
       ref={ref}
-      className="pointer-events-none fixed z-[100] rounded-full flex items-center justify-center"
+      className={`pointer-events-none fixed z-[100] rounded-full flex items-center justify-center ${
+        onLight ? "surface-light" : ""
+      }`}
       style={{
         left: -100,
         top: -100,

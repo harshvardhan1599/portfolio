@@ -8,9 +8,9 @@ export type NavItem =
   | { href: string; label: string; external: true };
 
 export const navItems: NavItem[] = [
-  { href: "/", label: "Work" },
-  { href: "/about", label: "About Me" },
-  { href: "/playground", label: "Playground" },
+  { href: "/", label: "Case Studies" },
+  { href: "/playground", label: "Tinkerings" },
+  { href: "/about", label: "About" },
   { href: "mailto:harshvardhan1599@gmail.com", label: "Contact", external: true },
 ];
 

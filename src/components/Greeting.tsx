@@ -23,7 +23,10 @@ export function Greeting() {
   if (!time) return null;
 
   return (
-    <span className="text-alt text-muted tabular-nums">
+    <span
+      className="text-alt text-muted tabular-nums"
+      style={{ fontSize: "17px" }}
+    >
       DEL, IND &bull; {time}
     </span>
   );
