@@ -108,51 +108,74 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Project 2 — Airbase */}
+          {/* Project 2 — Airbase (50/50 two-column) */}
           <div className="pb-16">
             <p className="text-alt text-muted">
               <span className="text-foreground">Airbase</span>, spend management
               platform. Acquired by Paylocity in 2025.
             </p>
 
-            <Link href="/work/airbase" className="block">
-              <div
-                data-cursor="case-study"
-                className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-10"
-              >
-                <div className="overflow-hidden rounded-none bg-fill-secondary p-4 transition-colors hover:bg-fill-hover md:col-span-4">
+            <Link
+              href="/work/airbase"
+              data-cursor="case-study"
+              className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+            >
+              {/* Left column — two large tiles (drive the height) */}
+              <div className="flex flex-col gap-4">
+                {/* Airbase dashboard */}
+                <div className="aspect-[660/520] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
                   <Image
-                    src="/work/Airbase1.webp"
-                    alt="Airbase — Spend via cards, spending by person, and declined transactions dashboards"
-                    width={800}
-                    height={1400}
-                    className="w-full"
+                    src="/work/airbase-dashboard.png"
+                    alt="Airbase — Analyze Spend dashboard"
+                    width={2412}
+                    height={1770}
+                    className="h-full w-full object-cover object-left-top"
                   />
                 </div>
-                <div className="overflow-hidden rounded-none bg-fill transition-colors hover:bg-fill-hover md:col-span-6">
+                {/* Airbase ledger / productivity */}
+                <div className="aspect-[660/520] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
                   <Image
-                    src="/work/Airbase2.webp"
-                    alt="Airbase — Ledger entries pending review"
-                    width={1024}
-                    height={1024}
-                    className="h-full w-full object-cover transition-opacity hover:opacity-80"
+                    src="/work/airbase-ledger.png"
+                    alt="Airbase — Productivity reports dashboard on Studio Display"
+                    width={2412}
+                    height={1911}
+                    className="h-full w-full object-cover object-center"
                   />
                 </div>
               </div>
 
-              <div className="mt-2">
-                <div
-                  data-cursor="case-study"
-                  className="w-full overflow-hidden rounded-none bg-fill px-4 pt-4 pb-0 transition-colors hover:bg-fill-hover"
-                >
+              {/* Right column — two tiles + testimonial (flexes to match) */}
+              <div className="flex flex-col gap-4">
+                {/* Spend via cards + spending by person (one tall image) */}
+                <div className="aspect-[2412/2358] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
                   <Image
-                    src="/work/Airbase3.webp"
-                    alt="Airbase — Reports & Analytics productivity dashboard"
-                    width={1536}
-                    height={800}
-                    className="w-full"
+                    src="/work/airbase-spend.png"
+                    alt="Airbase — spend via cards and spending by person"
+                    width={2412}
+                    height={2358}
+                    className="h-full w-full object-cover object-top"
                   />
                 </div>
+
+                {/* Testimonial */}
+                <figure className="flex min-h-[240px] flex-1 items-center justify-center rounded-2xl bg-fill-secondary p-8 transition-colors hover:bg-fill-hover">
+                  <div className="flex w-full flex-col gap-8 rounded-xl border border-[#E4E4E4] bg-white p-8">
+                    <blockquote className="text-[22px] leading-[135%] text-foreground">
+                      Harsh&rsquo;s efforts have paved the way for more innovation
+                      and user-friendly experiences for our users, improving their
+                      day-to-day workflows significantly.
+                    </blockquote>
+                    <figcaption className="flex items-center gap-3">
+                      <span
+                        aria-hidden
+                        className="h-9 w-9 shrink-0 rounded-full bg-fill"
+                      />
+                      <span className="text-alt-sm text-muted">
+                        Daru Sim, Principal Product Designer
+                      </span>
+                    </figcaption>
+                  </div>
+                </figure>
               </div>
             </Link>
           </div>

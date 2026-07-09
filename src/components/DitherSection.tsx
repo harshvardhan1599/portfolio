@@ -11,7 +11,7 @@ import DitherSettings from "./DitherSettings";
 export function DitherSection() {
   const ref = useRef<DitherBandHandle>(null);
   return (
-    <div className="relative w-full">
+    <div className="relative w-full" data-cursor-fire>
       <DitherBand ref={ref} />
       {process.env.NODE_ENV !== "production" && <DitherSettings target={ref} />}
     </div>
