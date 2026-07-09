@@ -78,7 +78,7 @@ export default function RootLayout({
         <Header />
         <Sidebar />
         <div className="px-5 sm:px-12">
-          <div className="mx-auto w-full max-w-4xl pt-16 min-h-screen bg-background border-y min-[992px]:border-x border-dashed border-border">
+          <div className="mx-auto w-full max-w-4xl pt-[var(--header-h)] min-h-screen bg-background border-y min-[992px]:border-x border-dashed border-border">
             <main className="flex flex-col">
               {children}
               <SiteFooter />

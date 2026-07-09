@@ -108,6 +108,7 @@ export function Header() {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
+  const barRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const projectName = projectNames[pathname];
 
@@ -119,6 +120,23 @@ export function Header() {
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Publish the header bar's real height so the content offset (pt) always
+  // matches it exactly. We measure the top bar only (not the mobile dropdown)
+  // and add 1px for the header's bottom border.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const root = document.documentElement;
+    const apply = () => {
+      const h = Math.ceil(bar.getBoundingClientRect().height) + 1;
+      root.style.setProperty("--header-h", `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(bar);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -144,7 +162,7 @@ export function Header() {
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <div className="px-5 py-4 flex items-center justify-between">
+      <div ref={barRef} className="px-5 py-4 flex items-center justify-between">
         <nav className="text-alt text-muted flex items-center gap-2 min-w-0">
           <Logo />
           {projectName ? (

@@ -18,6 +18,8 @@
   --cursor-pill: #333333;
   --foreground-inverse: #FFFFFF;
   --card: #FFFFFF;
+  /* measured at runtime by Header.tsx; fallback ~= header height before JS */
+  --header-h: 64px;
 }
 
 .dark {
