@@ -19,6 +19,7 @@ export interface DitherConfig {
   fade: number; // black→white transition softness (bigger = softer)
   stokeStrength: number; // cursor hover: added heat at the pointer
   stokeRadius: number; // cursor hover: influence radius, in cells
+  travel: boolean; // page-transition mode: 30fps + single noise octave (cheaper)
   // ember palette toggles
   yellow: boolean;
   purple: boolean;
@@ -41,6 +42,7 @@ export const DITHER_DEFAULTS: DitherConfig = {
   fade: 1,
   stokeStrength: 0.4,
   stokeRadius: 2,
+  travel: false,
   yellow: true,
   purple: true,
   blue: true,
@@ -121,6 +123,26 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
       let vx = 0;
       let vy = 0;
 
+      // Click ripple: concentric waves that expand from the click point across
+      // the whole band, perturbing the dither heat in expanding rings. A small
+      // pre-allocated pool (active in ripples[0..liveRipples-1]); reusable
+      // snapshot arrays keep the per-cell loop allocation-free.
+      const MAX_RIPPLES = 8;
+      const ripples: { x: number; y: number; birth: number }[] = Array.from(
+        { length: MAX_RIPPLES },
+        () => ({ x: 0, y: 0, birth: -999 }),
+      );
+      let liveRipples = 0;
+      const rippleFront = new Float32Array(MAX_RIPPLES); // px the front has reached
+      const rippleTEnv = new Float32Array(MAX_RIPPLES); // temporal fade 1→0
+      const ripplePhase = new Float32Array(MAX_RIPPLES); // age * omega
+      const RIPPLE_LIFE = 1.6; // s
+      const RIPPLE_SPEED = 900; // px/s expanding front
+      const RIPPLE_K = (2 * Math.PI) / 100; // ring spacing ~100px
+      const RIPPLE_OMEGA = RIPPLE_K * RIPPLE_SPEED; // phase speed = wave speed
+      const RIPPLE_AMP = 0.3; // heat perturbation
+      const RIPPLE_FALLOFF = 900; // px spatial decay
+
       const resize = () => {
         width = wrap.clientWidth;
         const h = cfgRef.current.height;
@@ -153,6 +175,7 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
           fade,
           stokeStrength,
           stokeRadius,
+          travel,
         } = cfgRef.current;
         const t = timeSec * speed;
         const cols = Math.ceil(width / cell);
@@ -222,6 +245,23 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         ctx.fillStyle = WHITE;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // Prune expired ripples (swap-remove) and snapshot per-frame invariants.
+        for (let ri = 0; ri < liveRipples; ri++) {
+          if (timeSec - ripples[ri].birth > RIPPLE_LIFE) {
+            liveRipples--;
+            const tmp = ripples[ri];
+            ripples[ri] = ripples[liveRipples];
+            ripples[liveRipples] = tmp;
+            ri--;
+          }
+        }
+        for (let ri = 0; ri < liveRipples; ri++) {
+          const age = timeSec - ripples[ri].birth;
+          rippleFront[ri] = RIPPLE_SPEED * age;
+          rippleTEnv[ri] = 1 - age / RIPPLE_LIFE;
+          ripplePhase[ri] = age * RIPPLE_OMEGA;
+        }
+
         for (let cy = 0; cy < rows; cy++) {
           const vNorm = (cy + 0.5) / rows; // 0 top .. 1 bottom
           let blackness = 0.5 + (0.5 - vNorm) * k;
@@ -233,11 +273,18 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
               cx * 0.35 * noiseScale,
               cy * 0.5 * noiseScale - t * 1.2 * riseSpeed,
             );
-            const n2 = noise2(
-              cx * 0.9 * noiseScale + 5.2,
-              cy * 1.1 * noiseScale - t * 2.0 * riseSpeed,
-            );
-            let heat = n1 * 0.7 + n2 * 0.3;
+            // travel mode drops the 2nd octave (half the trig) — imperceptible
+            // while the strip's motion dominates, frees the main thread.
+            let heat: number;
+            if (travel) {
+              heat = n1;
+            } else {
+              const n2 = noise2(
+                cx * 0.9 * noiseScale + 5.2,
+                cy * 1.1 * noiseScale - t * 2.0 * riseSpeed,
+              );
+              heat = n1 * 0.7 + n2 * 0.3;
+            }
             if (p) {
               const dx = cx - pcol;
               let dy = cy - prow;
@@ -248,6 +295,22 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
                 (1 + flare); // velocity flare (C)
             }
             if (warmField) heat += warmField[cy * cols + cx] * 0.85; // warmth (B)
+            // click ripples: concentric expanding rings across the whole band
+            if (liveRipples > 0) {
+              const cxp = (cx + 0.5) * cell;
+              const cyp = (cy + 0.5) * cell;
+              for (let ri = 0; ri < liveRipples; ri++) {
+                const dxp = cxp - ripples[ri].x;
+                const dyp = cyp - ripples[ri].y;
+                const dd = Math.sqrt(dxp * dxp + dyp * dyp);
+                if (dd > rippleFront[ri]) continue; // wave hasn't arrived yet
+                heat +=
+                  RIPPLE_AMP *
+                  Math.sin(dd * RIPPLE_K - ripplePhase[ri]) *
+                  rippleTEnv[ri] *
+                  Math.exp(-dd / RIPPLE_FALLOFF);
+              }
+            }
             if (heat > 1) heat = 1;
             const threshold = 0.5 + (heat - 0.5) * intensity;
 
@@ -280,8 +343,14 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
       };
 
       let raf = 0;
+      let frame = 0;
       const loop = () => {
-        draw(performance.now() / 1000);
+        frame++;
+        // travel mode draws at ~30fps (every other frame): a discrete-cell flame
+        // reads identically, and each skipped frame is budget for the page mount.
+        if (!cfgRef.current.travel || frame % 2 === 0) {
+          draw(performance.now() / 1000);
+        }
         raf = requestAnimationFrame(loop);
       };
 
@@ -320,14 +389,25 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         lastP = null; // keep `warm` decaying — that's the graceful cool-down
         if (reduced) draw(0);
       };
+      const onPointerDown = (e: PointerEvent) => {
+        if (reduced || liveRipples >= MAX_RIPPLES) return;
+        const r = wrap.getBoundingClientRect();
+        const rp = ripples[liveRipples++];
+        rp.x = e.clientX - r.left;
+        rp.y = e.clientY - r.top;
+        rp.birth = performance.now() / 1000;
+      };
+
       wrap.addEventListener("pointermove", onPointerMove);
       wrap.addEventListener("pointerleave", onPointerLeave);
+      wrap.addEventListener("pointerdown", onPointerDown);
 
       return () => {
         cancelAnimationFrame(raf);
         ro.disconnect();
         wrap.removeEventListener("pointermove", onPointerMove);
         wrap.removeEventListener("pointerleave", onPointerLeave);
+        wrap.removeEventListener("pointerdown", onPointerDown);
       };
     }, []);
 
@@ -336,7 +416,13 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         ref={wrapRef}
         aria-hidden
         className="w-full overflow-hidden leading-[0]"
-        style={{ height: DITHER_DEFAULTS.height, backgroundColor: WHITE }}
+        // dark→white gradient (matching the dither) instead of solid white, so
+        // the canvas's anti-aliased top edge blends into black (no white hairline
+        // over the transition strip's black panel) and its bottom into white.
+        style={{
+          height: DITHER_DEFAULTS.height,
+          background: `linear-gradient(to bottom, ${BLACK}, ${WHITE})`,
+        }}
       >
         <canvas ref={canvasRef} className="block" />
       </div>

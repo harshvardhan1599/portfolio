@@ -6,6 +6,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { ProjectTheme } from "@/components/ProjectTheme";
+import { DitherStage } from "@/components/DitherStage";
+import { SiteMenu } from "@/components/SiteMenu";
 import "./globals.css";
 
 const themeScript = `(function(){try{document.documentElement.classList.add("dark")}catch(e){}})();`;
@@ -74,11 +76,14 @@ export default function RootLayout({
       <body className="min-h-full bg-background font-sans text-foreground">
         <ProjectTheme />
         <CustomCursor />
-        <Header />
-        <main className="min-h-screen w-full flex flex-col bg-background">
-          {children}
-          <SiteFooter />
-        </main>
+        <DitherStage>
+          <Header />
+          <SiteMenu />
+          <main className="min-h-screen w-full flex flex-col bg-background">
+            {children}
+            <SiteFooter />
+          </main>
+        </DitherStage>
         <Analytics />
       </body>
     </html>

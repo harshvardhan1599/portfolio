@@ -185,9 +185,10 @@ export function Header() {
   const links = navItems.filter((item) => !item.external);
   const contact = navItems.find((item) => item.external);
 
-  // Homepage renders its own nav inside the hero (see NavMenu in page.tsx),
-  // so the global fixed header is suppressed there to avoid a duplicate menu.
-  if (pathname === "/") return null;
+  // Home and About render their own top-right NavMenu (see page.tsx / AboutBody),
+  // so the global fixed header is suppressed there to keep the menu consistent
+  // and avoid a duplicate.
+  if (pathname === "/" || pathname === "/about") return null;
 
   return (
     <header

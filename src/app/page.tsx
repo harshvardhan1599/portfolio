@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Greeting } from "@/components/Greeting";
 import { HeroAside } from "@/components/HeroAside";
-import { DitherSection } from "@/components/DitherSection";
+import { DitherSlot } from "@/components/DitherSlot";
 import { DisplayTile } from "@/components/DisplayTile";
 import { PhonesTile } from "@/components/PhonesTile";
 import { NotetakerTile } from "@/components/NotetakerTile";
+import { PaddedTile } from "@/components/PaddedTile";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
             {/* Left: location + time (top), then title (bottom) */}
             <div className="flex flex-col md:justify-between">
               <Greeting />
-              <h1 className="text-hero mt-6 text-foreground md:mt-16">
+              <h1 className="text-hero mt-6 text-3xl text-foreground sm:text-4xl md:mt-16 lg:text-5xl">
                 Harsh Vardhan Singh,
                 <br />
                 Product Designer
@@ -29,8 +30,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Dither transition: dark hero → white work section (animated) */}
-        <DitherSection />
+        {/* Dither divider: the shared dither canvas docks into this slot
+            (owned by DitherStage; travels between pages on navigation). */}
+        <DitherSlot />
 
         {/* Work */}
         <div className="surface-light px-6 pt-10 md:px-14">
@@ -55,7 +57,7 @@ export default function Home() {
                 {/* Testimonial */}
                 <figure className="flex min-h-[300px] flex-1 items-center justify-center rounded-2xl bg-[#F4F4F4] p-8">
                   <div className="flex w-full flex-col gap-8 rounded-xl border border-[#E4E4E4] bg-white p-8">
-                    <blockquote className="text-[22px] leading-[135%] text-foreground">
+                    <blockquote className="text-lg leading-[135%] text-foreground md:text-xl">
                       Creative, effective, and exceptionally fast. He owns
                       solutions end to end with clear ideas and tight execution.
                     </blockquote>
@@ -109,7 +111,7 @@ export default function Home() {
           </div>
 
           {/* Project 2 — Airbase (50/50 two-column) */}
-          <div className="pb-16">
+          <div className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
             <p className="text-alt text-muted">
               <span className="text-foreground">Airbase</span>, spend management
               platform. Acquired by Paylocity in 2025.
@@ -160,15 +162,18 @@ export default function Home() {
                 {/* Testimonial */}
                 <figure className="flex min-h-[240px] flex-1 items-center justify-center rounded-2xl bg-fill-secondary p-8 transition-colors hover:bg-fill-hover">
                   <div className="flex w-full flex-col gap-8 rounded-xl border border-[#E4E4E4] bg-white p-8">
-                    <blockquote className="text-[22px] leading-[135%] text-foreground">
+                    <blockquote className="text-lg leading-[135%] text-foreground md:text-xl">
                       Harsh&rsquo;s efforts have paved the way for more innovation
                       and user-friendly experiences for our users, improving their
                       day-to-day workflows significantly.
                     </blockquote>
                     <figcaption className="flex items-center gap-3">
-                      <span
-                        aria-hidden
-                        className="h-9 w-9 shrink-0 rounded-full bg-fill"
+                      <Image
+                        src="/work/daru-sim.png"
+                        alt="Daru Sim"
+                        width={80}
+                        height={80}
+                        className="h-9 w-9 shrink-0 rounded-full object-cover"
                       />
                       <span className="text-alt-sm text-muted">
                         Daru Sim, Principal Product Designer
@@ -180,50 +185,94 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Project 3 — Swadesh */}
-          <div className="pb-16">
+          {/* Project 3 — Swadesh (50/50 two-column) */}
+          <div className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
             <p className="text-alt text-muted">
               Led design and branding at{" "}
               <span className="text-foreground">Swadesh (YC S19)</span>, building
               a cross-border banking solution.
             </p>
 
-            <Link href="/work/swadesh" className="block">
-              <div className="mt-4">
-                <div
-                  data-cursor="case-study"
-                  className="w-full overflow-hidden rounded-none bg-fill px-8 py-8 transition-colors hover:bg-fill-hover"
-                >
+            <Link
+              href="/work/swadesh"
+              data-cursor="case-study"
+              className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+            >
+              {/* Left column */}
+              <div className="flex flex-col gap-4">
+                {/* App screens */}
+                <PaddedTile
+                  src="/work/SwadeshHero.webp"
+                  alt="Swadesh — link account, credit, and cards screens"
+                  width={1440}
+                  height={800}
+                  aspect="660 / 440"
+                  padding={32}
+                />
+                {/* What's next — credit & rewards (dev padding slider) */}
+                <PaddedTile
+                  src="/work/swadesh-project-2.png"
+                  alt="Swadesh — no-interest credit card and brand rewards"
+                  width={3162}
+                  height={1974}
+                  aspect="660 / 440"
+                  cover
+                />
+                {/* Globalpay transfer status */}
+                <div className="aspect-[660/400] overflow-hidden rounded-2xl bg-fill-secondary transition-colors hover:bg-fill-hover">
                   <Image
-                    src="/work/SwadeshHero.webp"
-                    alt="Swadesh — Link account, credit, and cards screens"
-                    width={1440}
-                    height={800}
-                    className="w-full"
+                    src="/work/swadesh-project-3.png"
+                    alt="Swadesh — Globalpay transfer status"
+                    width={3162}
+                    height={1974}
+                    className="h-full w-full object-contain"
                   />
                 </div>
               </div>
 
-              <div
-                data-cursor="case-study"
-                className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2"
-              >
-                <div className="h-120 overflow-hidden rounded-none bg-fill transition-colors hover:bg-fill-hover">
+              {/* Right column */}
+              <div className="flex flex-col gap-4">
+                {/* Testimonial (top) */}
+                <figure className="flex min-h-[240px] items-center justify-center rounded-2xl bg-fill-secondary p-8 transition-colors hover:bg-fill-hover">
+                  <div className="flex w-full flex-col gap-8 rounded-xl border border-[#E4E4E4] bg-white p-8">
+                    <blockquote className="text-lg leading-[135%] text-foreground md:text-xl">
+                      What sets Harsh apart is that he thinks like a product
+                      owner, not just a designer. He deeply understands users,
+                      challenges assumptions, and has a strong instinct for good
+                      design.
+                    </blockquote>
+                    <figcaption className="flex items-center gap-3">
+                      <Image
+                        src="/work/prateek-swain.png"
+                        alt="Prateek Swain"
+                        width={80}
+                        height={80}
+                        className="h-9 w-9 shrink-0 rounded-full object-cover"
+                      />
+                      <span className="text-alt-sm text-muted">
+                        Prateek Swain, CEO
+                      </span>
+                    </figcaption>
+                  </div>
+                </figure>
+                {/* Brand color palette */}
+                <PaddedTile
+                  src="/work/swadesh-project-4.png"
+                  alt="Swadesh — brand color palette"
+                  width={3162}
+                  height={1974}
+                  aspect="660 / 300"
+                  cover
+                />
+                {/* Green debit card in hand — fills to balance; gradient
+                    darkens on hover. scale-[1.03] crops the baked edge lines. */}
+                <div className="card-gradient min-h-[420px] flex-1 overflow-hidden rounded-2xl">
                   <Image
-                    src="/work/SwadeshMock.webp"
-                    alt="Swadesh — Phone mockup on green fabric"
-                    width={1000}
-                    height={1200}
-                    className="h-full w-full object-cover transition-opacity hover:opacity-80"
-                  />
-                </div>
-                <div className="h-120 overflow-hidden rounded-none bg-fill-secondary px-4 pt-4 pb-0 transition-colors hover:bg-fill-hover">
-                  <Image
-                    src="/work/SwadeshMockup.webp"
-                    alt="Swadesh — Debit Visa card mockup"
-                    width={1024}
-                    height={1024}
-                    className="h-full w-full object-cover object-top"
+                    src="/work/swadesh-project-6.png"
+                    alt="Swadesh — green debit Visa card held in hand"
+                    width={3162}
+                    height={1974}
+                    className="relative z-10 h-full w-full scale-[1.03] object-cover object-bottom"
                   />
                 </div>
               </div>

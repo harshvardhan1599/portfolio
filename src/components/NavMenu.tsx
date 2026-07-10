@@ -2,17 +2,24 @@
 
 import Link from "next/link";
 import { navItems } from "@/components/Sidebar";
+import { useDitherNav } from "@/components/DitherStage";
 
 export function NavMenu() {
   const links = navItems.filter((item) => !item.external);
   const contact = navItems.find((item) => item.external);
+  const navigate = useDitherNav();
 
   return (
-    <nav className="flex items-center gap-6 text-[17px] text-muted">
+    <nav className="flex items-center gap-6 text-base text-muted md:text-lg">
       {links.map((item) => (
         <Link
           key={item.href}
           href={item.href}
+          // home↔about links are taken over by the shared-dither transition;
+          // navigate() returns false for anything else → normal navigation.
+          onClick={(e) => {
+            if (navigate(item.href)) e.preventDefault();
+          }}
           className="underline decoration-1 decoration-muted/50 underline-offset-[12px] transition-colors hover:decoration-foreground"
         >
           {item.label}

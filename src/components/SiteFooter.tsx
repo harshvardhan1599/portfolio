@@ -4,7 +4,9 @@ import { usePathname } from "next/navigation";
 
 export function SiteFooter() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  // Home and About both end in a dither that resolves to white, so the footer
+  // is light there (and the custom cursor inverts to dark over .surface-light).
+  const lightFooter = pathname === "/" || pathname === "/about";
 
   const lastUpdated = new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -15,7 +17,7 @@ export function SiteFooter() {
   return (
     <footer
       className={`mt-auto border-t border-dashed border-foreground/10 bg-background ${
-        isHome ? "surface-light" : ""
+        lightFooter ? "surface-light" : ""
       }`}
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 sm:flex-row sm:items-center sm:justify-between">
