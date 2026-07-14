@@ -2,27 +2,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Single fixed palette — this version has no light/dark mode variants. These
+   are the (formerly `.dark`) values, promoted to the unconditional root so
+   every page renders the intended theme without depending on any `.dark` class
+   being present. Light regions are opt-in via `.surface-light` below. */
 :root {
-  --background: #FAFAFA;
-  --foreground: #32404F;
-  --muted: #858E97;
-  --accent: #FF5800;
-  --surface: #F0F0F0;
-  --page-bg: #F8F9F9;
-  --border: #DEDEDE;
-  --hover: #EEEEEE;
-  --hover-accent: #F9ECE5;
-  --fill: #E0E0E0;
-  --fill-secondary: #F4F4F4;
-  --fill-hover: #D8D8D8;
-  --cursor-pill: #333333;
-  --foreground-inverse: #FFFFFF;
-  --card: #FFFFFF;
-  /* measured at runtime by Header.tsx; fallback ~= header height before JS */
-  --header-h: 64px;
-}
-
-.dark {
   --background: #171718;
   --foreground: #FFFFFF;
   --muted: #97989A;
@@ -38,11 +22,14 @@
   --cursor-pill: #E8E8E8;
   --foreground-inverse: #32404F;
   --card: var(--background);
+  /* measured at runtime by Header.tsx; fallback ~= header height before JS */
+  --header-h: 64px;
 }
 
-/* Light-surface scope: render a subtree with the light tokens even under the
-   global `.dark`. CSS vars cascade, so `bg-fill` / `text-foreground` / … inside
-   resolve to these values. Used for the homepage work section + footer. */
+/* Light-surface scope: render a subtree with light tokens even though the base
+   palette is dark. CSS vars cascade, so `bg-fill` / `text-foreground` / … inside
+   resolve to these values. Used for the homepage work section, case studies,
+   and footer. */
 .surface-light {
   --background: #FFFFFF;
   --foreground: #32404F;
@@ -107,50 +94,30 @@
 }
 
 
+/* Per-project accent — the base (dark-surface) values. Light islands below. */
 .theme-swadesh {
-  --accent: #166C3B;
-  --hover-accent: #E0EDEA;
-}
-
-.dark.theme-swadesh {
   --accent: #A6E8C4;
   --hover-accent: #114035;
 }
 
 .theme-sensei-agent {
-  --accent: #845201;
-  --hover-accent: #FDF2DC;
-}
-
-.dark.theme-sensei-agent {
   --accent: #ECB42D;
   --hover-accent: #453715;
 }
 
 .theme-about {
   --accent: #0D99FF;
-  --hover-accent: #E5F3FE;
-}
-
-.dark.theme-about {
-  --accent: #0D99FF;
   --hover-accent: #0F2F4A;
 }
 
 .theme-playground {
   --accent: #076E6A;
-  --hover-accent: #E8F1F0;
-}
-
-.dark.theme-playground {
-  --accent: #076E6A;
   --hover-accent: #11332F;
 }
 
-/* Light-surface scope keeps each project's LIGHT accent even under the global
-   `.dark` theme, so the case-study text highlight is dark-on-pale (light mode),
-   not the dark-mode variant. Set on the closer `.surface-light` ancestor, so it
-   wins for the highlight over the `.dark.theme-*` values registered on <html>. */
+/* Light-surface scope keeps each project's LIGHT accent inside `.surface-light`
+   islands, so the case-study text highlight is dark-on-pale. Set on the closer
+   `.surface-light` ancestor, so it wins over the base `.theme-*` accent. */
 .theme-swadesh .surface-light {
   --accent: #166C3B;
   --hover-accent: #E0EDEA;
@@ -276,12 +243,8 @@ body {
 }
 
 .border-overlay {
-  outline: 1px solid rgba(0, 0, 0, 0.1);
-  outline-offset: -1px;
-}
-
-.dark .border-overlay {
   outline: 1px solid rgba(255, 255, 255, 0.1);
+  outline-offset: -1px;
 }
 
 .t-icon-swap {

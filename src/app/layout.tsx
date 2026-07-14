@@ -10,8 +10,6 @@ import { DitherStage } from "@/components/DitherStage";
 import { SiteMenu } from "@/components/SiteMenu";
 import "./globals.css";
 
-const themeScript = `(function(){try{document.documentElement.classList.add("dark")}catch(e){}})();`;
-
 const projectThemeScript = `(function(){try{var t={"/work/swadesh":"theme-swadesh","/work/sensei-agent":"theme-sensei-agent","/about":"theme-about","/playground":"theme-playground"}[location.pathname];if(t)document.documentElement.classList.add(t);}catch(e){}})();`;
 
 const inter = Inter({
@@ -70,7 +68,6 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable} ${ovo.variable} h-full antialiased`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: projectThemeScript }} />
       </head>
       <body className="min-h-full bg-background font-sans text-foreground">
