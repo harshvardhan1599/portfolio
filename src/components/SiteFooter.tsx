@@ -4,9 +4,14 @@ import { usePathname } from "next/navigation";
 
 export function SiteFooter() {
   const pathname = usePathname();
-  // Home and About both end in a dither that resolves to white, so the footer
-  // is light there (and the custom cursor inverts to dark over .surface-light).
-  const lightFooter = pathname === "/" || pathname === "/about";
+  // Home + About end in a white dither, and case-study pages (/work/*) are
+  // light-themed throughout — so the footer is light on all of them (and the
+  // custom cursor inverts to dark over .surface-light).
+  const lightFooter =
+    pathname === "/" ||
+    pathname === "/about" ||
+    pathname === "/playground" ||
+    pathname.startsWith("/work/");
 
   const lastUpdated = new Intl.DateTimeFormat("en-US", {
     month: "short",

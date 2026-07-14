@@ -72,11 +72,7 @@ export function StaticTile({
           />
         )}
       </div>
-      <figcaption
-        className={`text-alt-sm text-muted ${side === "right" ? "text-right" : ""}`}
-      >
-        {caption}
-      </figcaption>
+      <figcaption className="text-alt-sm text-muted">{caption}</figcaption>
     </figure>
   );
 

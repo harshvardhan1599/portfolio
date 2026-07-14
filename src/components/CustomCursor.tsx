@@ -44,7 +44,8 @@ export function CustomCursor() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let idle = 0;
 
-    setVisible(true);
+    // reveal next frame (avoids a synchronous setState inside the effect body)
+    const showRaf = requestAnimationFrame(() => setVisible(true));
 
     const drawTrail = () => {
       const cv = trailCanvasRef.current;
@@ -107,6 +108,10 @@ export function CustomCursor() {
       if (fireEl && !reduced) {
         const r = fireEl.getBoundingClientRect();
         bandRectRef.current = r;
+        // palette matches the band under the cursor (cool on Tinkerings, warm
+        // elsewhere) — read from data-cursor-embers, fall back to the default.
+        const attr = fireEl.getAttribute("data-cursor-embers");
+        const palette = attr ? attr.split(",") : EMBERS;
         const col0 = Math.floor((e.clientX - r.left) / CELL);
         const row0 = Math.floor((e.clientY - r.top) / CELL);
         const key = `${col0},${row0}`;
@@ -120,7 +125,7 @@ export function CustomCursor() {
                 row: row0 + Math.round((Math.random() - 0.5) * 2), // ±1 scatter
                 birth: performance.now() / 1000,
                 life: 0.2 + Math.random() * 0.35, // short, like a flickering cell
-                color: EMBERS[Math.floor(Math.random() * EMBERS.length)],
+                color: palette[Math.floor(Math.random() * palette.length)],
               });
             }
             if (trailRef.current.length > 30) {
@@ -170,6 +175,7 @@ export function CustomCursor() {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
       cancelAnimationFrame(rafRef.current);
+      cancelAnimationFrame(showRaf);
       clearTimeout(idle);
     };
   }, []);

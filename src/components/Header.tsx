@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems } from "@/components/Sidebar";
+
+// Case-study breadcrumb bar (HARSH VARDHAN SINGH › PROJECT). The site-wide
+// navigation lives in SiteMenu (top-right, every route); this header only
+// renders the left breadcrumb on case-study pages, so the two never collide.
 
 const projectNames: Record<string, string> = {
   "/work/sensei-agent": "Sensei Agent",
@@ -77,62 +80,8 @@ function Logo() {
   );
 }
 
-function HamburgerIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path
-        d="M3 6h14M3 10h14M3 14h14"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path
-        d="M5 5l10 10M15 5L5 15"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function ContactRing() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      <path
-        d="M14 8a6 6 0 1 1-1.76-4.24"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M14 2.5V6h-3.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function Header() {
   const [hidden, setHidden] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const lastY = useRef(0);
   const barRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -148,9 +97,8 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Publish the header bar's real height so the content offset (pt) always
-  // matches it exactly. We measure the top bar only (not the mobile dropdown)
-  // and add 1px for the header's bottom border.
+  // Publish the header bar's real height so case-study content offset (pt)
+  // always matches it exactly (+1px for the header's bottom border).
   useEffect(() => {
     const bar = barRef.current;
     if (!bar) return;
@@ -163,142 +111,40 @@ export function Header() {
     const ro = new ResizeObserver(apply);
     ro.observe(bar);
     return () => ro.disconnect();
-  }, []);
+  }, [projectName]);
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  const navItemClass = (isActive: boolean) =>
-    `text-[15px] leading-[140%] link-hover ${
-      isActive
-        ? "text-accent font-medium link-hover-accent"
-        : "text-muted hover:text-foreground"
-    }`;
-
-  function isActive(item: (typeof navItems)[number]) {
-    if (item.external) return false;
-    if (item.href === "/") return pathname === "/";
-    return pathname === item.href || pathname.startsWith(`${item.href}/`);
-  }
-
-  const links = navItems.filter((item) => !item.external);
-  const contact = navItems.find((item) => item.external);
-
-  // Home and About render their own top-right NavMenu (see page.tsx / AboutBody),
-  // so the global fixed header is suppressed there to keep the menu consistent
-  // and avoid a duplicate.
-  if (pathname === "/" || pathname === "/about") return null;
+  // Only the case-study breadcrumb needs this header; every other route relies
+  // solely on the site-wide SiteMenu.
+  if (!projectName) return null;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-20 transition-transform duration-300 ease-out ${
+      // surface-light: case-study pages are light-themed, so the breadcrumb
+      // tokens (and the custom cursor over it) flip to the dark-on-light set.
+      // Background stays transparent so there's no opaque bar.
+      style={{ background: "transparent" }}
+      className={`surface-light fixed top-0 left-0 right-0 z-20 transition-transform duration-300 ease-out ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
       <div
         ref={barRef}
-        className="flex items-center justify-between gap-4 px-6 py-5 md:px-14"
+        className="flex items-center gap-4 px-6 py-5 md:px-14"
       >
-        {/* Left: breadcrumb, case-study routes only */}
-        {projectName ? (
-          <nav className="text-alt text-muted flex min-w-0 items-center gap-2">
-            <Logo />
-            <Link
-              href="/"
-              className="hover:text-foreground transition-colors whitespace-nowrap"
-            >
-              <span className="sm:hidden">HARSH</span>
-              <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
-            </Link>
-            <CaretRight />
-            <span className="text-foreground truncate">
-              {projectName.toUpperCase()}
-            </span>
-          </nav>
-        ) : (
-          <span aria-hidden className="min-w-0" />
-        )}
-
-        {/* Right: desktop nav pill */}
-        <nav className="hidden items-center gap-1 rounded-full border border-border bg-surface/80 p-1.5 pl-2 backdrop-blur-sm sm:flex">
-          {links.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={navItemClass(isActive(item))}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {contact && (
-            <a
-              href={contact.href}
-              target="_blank"
-              rel="noreferrer"
-              className="ml-1 flex items-center gap-2 rounded-full bg-foreground px-4 py-1.5 text-[15px] leading-[140%] text-background transition-opacity hover:opacity-90"
-            >
-              {contact.label}
-              <ContactRing />
-            </a>
-          )}
+        <nav className="text-alt text-muted flex min-w-0 items-center gap-2">
+          <Logo />
+          <Link
+            href="/"
+            className="hover:text-foreground transition-colors whitespace-nowrap"
+          >
+            <span className="sm:hidden">HARSH</span>
+            <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
+          </Link>
+          <CaretRight />
+          <span className="text-foreground truncate">
+            {projectName.toUpperCase()}
+          </span>
         </nav>
-
-        {/* Right: mobile toggle */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          className="t-icon-swap text-foreground h-9 w-9 rounded-full border border-border bg-surface/80 backdrop-blur-sm sm:hidden"
-          data-state={menuOpen ? "b" : "a"}
-        >
-          <span className="t-icon" data-icon="a">
-            <HamburgerIcon />
-          </span>
-          <span className="t-icon" data-icon="b">
-            <CloseIcon />
-          </span>
-        </button>
-      </div>
-
-      {/* Mobile dropdown */}
-      <div
-        className={`hidden max-sm:grid transition-[grid-template-rows] duration-300 ease-out ${
-          menuOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <nav className="mx-6 mb-2 flex flex-col items-start gap-1 rounded-2xl border border-border bg-surface p-3">
-            {navItems.map((item) => {
-              const cls = navItemClass(isActive(item));
-              if (item.external) {
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cls}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
-                );
-              }
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cls}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
       </div>
     </header>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DitherTile } from "@/components/DitherTile";
 import { StaticTile } from "@/components/StaticTile";
+import { PlaygroundDither } from "@/components/PlaygroundDither";
 
 export const metadata: Metadata = {
   title: "Playground",
@@ -10,21 +11,30 @@ export const metadata: Metadata = {
 export default function PlaygroundPage() {
   return (
     <div className="flex-1">
-      <section className="max-w-4xl">
-        <div className="px-6 pt-10 md:px-10 md:pt-12">
-          <p className="text-alt text-muted text-left">
+      {/* Blue hero — work-page orientation: colored hero → dither → light body */}
+      <section className="w-full" style={{ backgroundColor: "#044AB3" }}>
+        <div className="px-6 pb-10 pt-12 md:px-14 md:pt-14">
+          <p className="text-alt text-left text-white/75">
             Archive of
             <br />
             visual explorations
           </p>
         </div>
+      </section>
 
-        <div className="mt-10 px-6 pb-16 md:px-10 md:mt-12">
-          <div className="flex flex-col gap-10 md:grid md:grid-cols-12 md:gap-y-0">
-            <div className="md:col-start-1 md:col-span-7">
+      {/* Dither: blue hero → light body (cool embers) */}
+      <PlaygroundDither />
+
+      {/* Light body — full width */}
+      <section className="surface-light w-full">
+        <div className="px-6 pb-16 pt-12 md:px-14 md:pt-14">
+          {/* Clean grid — one tile per cell, no overlaps. items-start keeps
+              varying tile heights from stretching. */}
+          <div className="grid grid-cols-1 items-start gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
               <DitherTile />
             </div>
-            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+            <div>
               <StaticTile
                 src="/playground/pixel-grid.mp4"
                 alt="Delhi, Daily — a daily generative study of flowers shaped by Delhi's weather"
@@ -35,7 +45,17 @@ export default function PlaygroundPage() {
                 href="https://pixel-grid-drab.vercel.app/"
               />
             </div>
-            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+            <div>
+              <StaticTile
+                src="/playground/guild-landing.mp4"
+                alt="Guild Robotics — Building Robotics for Logistics landing page"
+                caption="Landing page • Guild Robotics"
+                width={1600}
+                height={922}
+                side="right"
+              />
+            </div>
+            <div>
               <StaticTile
                 src="/playground/saturn-studios.png"
                 alt="Saturn Studios branding"
@@ -45,7 +65,7 @@ export default function PlaygroundPage() {
                 side="left"
               />
             </div>
-            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+            <div>
               <StaticTile
                 src="/playground/gyft.png"
                 alt="Gyft branding concept"
@@ -55,7 +75,7 @@ export default function PlaygroundPage() {
                 side="right"
               />
             </div>
-            <div className="md:col-start-1 md:col-span-7 md:-mt-12">
+            <div>
               <StaticTile
                 src="/playground/presfit.png"
                 alt="Presfit branding"
@@ -65,7 +85,7 @@ export default function PlaygroundPage() {
                 side="left"
               />
             </div>
-            <div className="md:col-start-6 md:col-span-7 md:-mt-12">
+            <div>
               <StaticTile
                 src="/playground/nu-ventures.png"
                 alt="Nu Ventures branding concept"

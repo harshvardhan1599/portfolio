@@ -31,7 +31,7 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) notFound();
 
   return (
-    <article className="flex-1">
+    <article className="surface-light flex-1">
       <div className="mx-auto max-w-3xl px-8 pb-20 pt-10 md:pt-14">
         <Link
           href="/"

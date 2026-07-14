@@ -20,6 +20,10 @@ export interface DitherConfig {
   stokeStrength: number; // cursor hover: added heat at the pointer
   stokeRadius: number; // cursor hover: influence radius, in cells
   travel: boolean; // page-transition mode: 30fps + single noise octave (cheaper)
+  // dark end of the dither (seams with the hero); default matches the site hero
+  baseColor: string;
+  // explicit ember palette; when null, built from the toggles below
+  embers: string[] | null;
   // ember palette toggles
   yellow: boolean;
   purple: boolean;
@@ -43,6 +47,8 @@ export const DITHER_DEFAULTS: DitherConfig = {
   stokeStrength: 0.4,
   stokeRadius: 2,
   travel: false,
+  baseColor: "#171718", // = BLACK (defined below; literal to avoid TDZ)
+  embers: null,
   yellow: true,
   purple: true,
   blue: true,
@@ -119,6 +125,12 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
       let warmRows = 0;
       let warmMax = 0; // guard: skip the decay pass when the field is cold
       let lastT = 0;
+      // Flame phase accumulators. The scroll advances by dt*speed*riseSpeed each
+      // frame (embers by dt*speed) instead of being absoluteTime*speed — so
+      // changing speed/riseSpeed (e.g. the transition flare ramping back down)
+      // only changes the RATE, never teleports/fast-forwards the pattern.
+      let flameScroll = 0;
+      let emberPhase = 0;
       let lastP: { x: number; y: number; t: number } | null = null;
       let vx = 0;
       let vy = 0;
@@ -176,12 +188,14 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
           stokeStrength,
           stokeRadius,
           travel,
+          baseColor,
         } = cfgRef.current;
-        const t = timeSec * speed;
         const cols = Math.ceil(width / cell);
         const rows = Math.max(1, Math.ceil(height / cell));
         const px = cell * dpr;
-        const embers = activeEmbers();
+        const customEmbers = cfgRef.current.embers;
+        const embers =
+          customEmbers && customEmbers.length ? customEmbers : activeEmbers();
         const emberThreshold = 1 - emberAmount; // higher amount → more embers
         const k = 1 / Math.max(0.15, fade); // transition steepness
 
@@ -196,6 +210,9 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         // been (an ember trail) and cools gracefully when the cursor leaves.
         const dt = Math.min(0.05, Math.max(0, timeSec - lastT));
         lastT = timeSec;
+        // advance the flame phase by rate (no absolute-time coupling)
+        flameScroll += dt * speed * riseSpeed;
+        emberPhase += dt * speed;
         let flare = 0;
         if (!reduced) {
           if (!warm || warmCols !== cols || warmRows !== rows) {
@@ -271,7 +288,7 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
           for (let cx = 0; cx < cols; cx++) {
             const n1 = noise2(
               cx * 0.35 * noiseScale,
-              cy * 0.5 * noiseScale - t * 1.2 * riseSpeed,
+              cy * 0.5 * noiseScale - flameScroll * 1.2,
             );
             // travel mode drops the 2nd octave (half the trig) — imperceptible
             // while the strip's motion dominates, frees the main thread.
@@ -281,7 +298,7 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
             } else {
               const n2 = noise2(
                 cx * 0.9 * noiseScale + 5.2,
-                cy * 1.1 * noiseScale - t * 2.0 * riseSpeed,
+                cy * 1.1 * noiseScale - flameScroll * 2.0,
               );
               heat = n1 * 0.7 + n2 * 0.3;
             }
@@ -323,10 +340,11 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
             const nearEdge =
               Math.abs(blackness - threshold) <
               0.13 + (warmField ? warmField[cy * cols + cx] * 0.08 : 0);
-            let color = BLACK;
+            let color = baseColor;
             if (nearEdge && heat > emberThreshold && embers.length) {
               const idx = Math.floor(
-                hash(cx * 3.1, cy * 1.7 + Math.floor(t * 0.6)) * embers.length,
+                hash(cx * 3.1, cy * 1.7 + Math.floor(emberPhase * 0.6)) *
+                  embers.length,
               );
               color = embers[Math.min(idx, embers.length - 1)];
             }
@@ -420,8 +438,8 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         // the canvas's anti-aliased top edge blends into black (no white hairline
         // over the transition strip's black panel) and its bottom into white.
         style={{
-          height: DITHER_DEFAULTS.height,
-          background: `linear-gradient(to bottom, ${BLACK}, ${WHITE})`,
+          height: cfgRef.current.height,
+          background: `linear-gradient(to bottom, ${cfgRef.current.baseColor}, ${WHITE})`,
         }}
       >
         <canvas ref={canvasRef} className="block" />

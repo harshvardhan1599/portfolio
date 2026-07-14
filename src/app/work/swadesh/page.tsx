@@ -96,8 +96,8 @@ const sections: Section[] = [
 
 export default function SwadeshPage() {
   return (
-    <article className="flex-1">
-      <section className="w-full max-w-4xl">
+    <article className="surface-light flex-1">
+      <section className="mx-auto w-full max-w-4xl">
         <div className="px-6 md:px-16 pb-8 pt-10 md:pt-12">
           <p className="text-alt text-muted">
             Swadesh · YC S19

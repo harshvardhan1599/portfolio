@@ -8,7 +8,7 @@
 // to the top and straightens/lifts it slightly. Desktop only (md+).
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GradientBackground, {
   type GradientBackgroundHandle,
 } from "@/components/GradientBackground";
@@ -31,9 +31,18 @@ type CardDef = Media & {
   name: string;
   width: number; // card width, px
   aspect: string; // media box aspect-ratio, "w / h"
-  anchor: { top: number; left?: number; right?: number };
+  top: number; // vertical anchor, px
+  edge: "left" | "right"; // which side gutter the card lives in
+  off: number; // distance from that edge at the reference width, px
   rot: number; // resting rotation, deg
 };
+
+// Responsiveness: cards are pinned to their side gutter and pushed further
+// toward (and off) that edge as the viewport narrows from REF_W → HIDE_W, then
+// the whole layer is hidden below HIDE_W (mobile) — text-only, never covered.
+const REF_W = 1440; // width the positions were tuned at
+const HIDE_W = 768; // below this (mobile / md breakpoint), cards are hidden
+const PUSH_MAX = 520; // px a card slides toward its edge across the range
 
 // Cover styling from the spec.
 const COVER: React.CSSProperties = {
@@ -45,12 +54,14 @@ const COVER: React.CSSProperties = {
   boxShadow: "0 4px 14px rgba(0, 0, 0, 0.45)",
 };
 
+// off = distance from the card's edge to its near side at REF_W (negative =
+// already bleeding off that edge). Derived from the tuned 1440px placements.
 const CARDS: CardDef[] = [
-  { id: "disco", name: "disco.jpg", kind: "image", src: "/carousel/carousel2.png", width: 362, aspect: "3 / 2", anchor: { top: 1060, right: -169 }, rot: -2 },
-  { id: "sunday", name: "sunday.jpg", kind: "image", src: "/about/sunday.jpg", width: 336, aspect: "3 / 4", anchor: { top: 403, left: 100 }, rot: 0 },
-  { id: "columns", name: "columns.jpg", kind: "image", src: "/carousel/carousel1.png", width: 280, aspect: "3 / 4", anchor: { top: 557, left: 1251 }, rot: -4 },
-  { id: "lake", name: "lake.mp4", kind: "video", src: "/carousel/carousel4.mp4", width: 342, aspect: "3 / 4", anchor: { top: 976, right: 978 }, rot: 5 },
-  { id: "strips", name: "strips.mp4", kind: "gradient", src: "/about/strips-loop.mp4", width: 404, aspect: "16 / 9", anchor: { top: 155, left: 732 }, rot: -3 },
+  { id: "disco", name: "disco.jpg", kind: "image", src: "/carousel/carousel2.png", width: 362, aspect: "3 / 2", top: 1060, edge: "right", off: -169, rot: -2 },
+  { id: "sunday", name: "sunday.jpg", kind: "image", src: "/about/sunday.jpg", width: 336, aspect: "3 / 4", top: 403, edge: "left", off: 100, rot: 0 },
+  { id: "columns", name: "columns.jpg", kind: "image", src: "/carousel/carousel1.png", width: 280, aspect: "3 / 4", top: 557, edge: "right", off: -91, rot: -4 },
+  { id: "lake", name: "lake.mp4", kind: "video", src: "/carousel/carousel4.mp4", width: 342, aspect: "3 / 4", top: 976, edge: "left", off: 120, rot: 5 },
+  { id: "strips", name: "strips.mp4", kind: "gradient", src: "/about/strips-loop.mp4", width: 404, aspect: "16 / 9", top: 155, edge: "right", off: 304, rot: -3 },
 ];
 
 type Pos = { x: number; y: number; z: number };
@@ -61,6 +72,37 @@ export function DraggablePhotos() {
   );
   const [dragId, setDragId] = useState<string | null>(null);
   const [stripsPreset, setStripsPreset] = useState("Opal");
+  // Staggered entrance: the whole layer already mounts after the text cascade
+  // (deferred in AboutBody until `dither:settled`), so each card just fades +
+  // scales in one after another once mounted. Reduced-motion shows instantly.
+  const [enter, setEnter] = useState(false);
+  // once the staggered entrance is done, transform transitions switch to a
+  // short, delay-free ease so the responsive edge-push tracks resize smoothly
+  // (the entrance's per-card delay would otherwise make the push feel laggy).
+  const [entered, setEntered] = useState(false);
+  const [reduced] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  // live viewport width → drives the outward push + hide breakpoint
+  const [vw, setVw] = useState(REF_W);
+  useEffect(() => {
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      setVw(window.innerWidth);
+    };
+    const onResize = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
   const gradientRef = useRef<GradientBackgroundHandle>(null);
   const topZ = useRef(10 + CARDS.length);
   const drag = useRef<{
@@ -90,12 +132,45 @@ export function DraggablePhotos() {
     setDragId(null);
   };
 
+  useEffect(() => {
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setEnter(true));
+    });
+    // entrance ends after base + last card's stagger + duration
+    const total = reduced ? 0 : 150 + (CARDS.length - 1) * 120 + 640 + 100;
+    const t = window.setTimeout(() => setEntered(true), total);
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(t);
+    };
+  }, [reduced]);
+
+  // below the breakpoint: no cards at all, text only (never covered)
+  if (vw < HIDE_W) return null;
+
+  // 0 at/above the design width → 1 at the hide breakpoint; eased (quadratic) so
+  // cards stay near their tuned spots when there's room and slide hard toward the
+  // edges only as the viewport gets tight — clearing the text before they vanish.
+  const t = Math.max(0, Math.min(1, (REF_W - vw) / (REF_W - HIDE_W)));
+  const pushFactor = t * t;
+
   return (
     <div className="pointer-events-none absolute inset-0 z-10 hidden overflow-visible md:block">
-      {CARDS.map((c) => {
+      {CARDS.map((c, i) => {
         const p = pos[c.id];
         const dragging = dragId === c.id;
         const rot = dragging ? c.rot * 0.3 : c.rot;
+        const shown = reduced || enter;
+        // entrance folds into the existing drag transform: a slight scale-up +
+        // rise, staggered 120ms per card after a short base delay.
+        const entScale = shown ? 1 : 0.9;
+        const entRise = shown ? 0 : 14;
+        const stagger = 150 + i * 120;
+        // push toward this card's edge as the viewport narrows (left → −x)
+        const pushX =
+          pushFactor * PUSH_MAX * (c.edge === "left" ? -1 : 1);
         return (
           <div
             key={c.id}
@@ -105,16 +180,21 @@ export function DraggablePhotos() {
             className="pointer-events-auto absolute select-none"
             style={{
               ...COVER,
-              top: c.anchor.top,
-              left: c.anchor.left,
-              right: c.anchor.right,
+              top: c.top,
+              left: c.edge === "left" ? c.off : undefined,
+              right: c.edge === "right" ? c.off : undefined,
               width: c.width,
               zIndex: p.z,
               touchAction: "none",
-              transform: `translate(${p.x}px, ${p.y}px) rotate(${rot}deg) scale(${dragging ? 1.03 : 1})`,
+              opacity: shown ? 1 : 0,
+              transform: `translate(${p.x + pushX}px, ${p.y + entRise}px) rotate(${rot}deg) scale(${(dragging ? 1.03 : 1) * entScale})`,
               transition: dragging
                 ? "box-shadow 200ms ease"
-                : "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)",
+                : reduced
+                  ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)"
+                  : entered
+                    ? "transform 480ms cubic-bezier(0.22, 1, 0.36, 1)"
+                    : `transform 640ms cubic-bezier(0.22, 1, 0.36, 1) ${enter ? stagger : 0}ms, opacity 560ms ease-out ${enter ? stagger : 0}ms`,
               boxShadow: dragging
                 ? "0 18px 40px rgba(0, 0, 0, 0.55)"
                 : COVER.boxShadow,
