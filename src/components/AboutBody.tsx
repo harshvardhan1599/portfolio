@@ -129,8 +129,8 @@ export function AboutBody() {
             <p className="text-base leading-[150%] text-foreground sm:text-lg lg:text-xl">
               I like to design products.
               <br />
-              I&apos;ve built products across the company lifecycle — from idea
-              to acquisition.
+              I&apos;ve built products across the whole company lifecycle, from
+              a first idea to acquisition.
             </p>
             <p className="text-base leading-[150%] text-foreground sm:text-lg lg:text-xl">
               I like to help startups figure out what they should be building and
@@ -138,33 +138,34 @@ export function AboutBody() {
             </p>
           </section>
 
-          {/* How do I do it */}
+          {/* How do I work */}
           <section className="flex flex-col gap-5" style={reveal(8)}>
-            <h2 className="text-alt text-muted">How do I do it?</h2>
+            <h2 className="text-alt text-muted">How do I work?</h2>
             <p className="text-base leading-[150%] text-foreground sm:text-lg lg:text-xl">
-              I find the most powerful work I&apos;ve done to be when I&apos;ve
-              been able to push code.
+              I stay hands-on and build what I design. When I prototype in code,
+              the version I&apos;m shaping is usually the version that ships, so
+              ideas get tried for real instead of sitting in a mockup.
             </p>
           </section>
 
-          {/* Design is a team sport */}
+          {/* Leading and building */}
           <section className="flex flex-col gap-5" style={reveal(9)}>
-            <h2 className="text-alt text-muted">Design is a team sport</h2>
+            <h2 className="text-alt text-muted">Leading &amp; building</h2>
             <p className="text-base leading-[150%] text-foreground sm:text-lg lg:text-xl">
-              Although I currently work as an IC, I&apos;ve also led design teams
-              before. I find empowering other designers to do their best work
-              incredibly rewarding — whether that&apos;s as a teammate or as a
-              leader.
+              I&apos;ve led design teams and worked as a solo IC, and I enjoy
+              both. What I care about most is making the people around me better
+              at what they do. The strongest work I&apos;ve been part of came
+              from teams that were trusted and given room to run.
             </p>
           </section>
 
-          {/* Keep learning */}
+          {/* Always tinkering */}
           <section className="flex flex-col gap-5" style={reveal(10)}>
-            <h2 className="text-alt text-muted">Keep learning</h2>
+            <h2 className="text-alt text-muted">Always tinkering</h2>
             <p className="text-base leading-[150%] text-foreground sm:text-lg lg:text-xl">
-              In my spare time I&apos;m often trying to learn new things by
-              building my own software. It lets me dive head first into topics
-              like shaders, SwiftUI, 3D modeling, and more.
+              Most of my free time goes into building things just to see if I
+              can. It&apos;s how I learn best. A random side project will pull me
+              deep into something new, like shaders, SwiftUI, or 3D.
             </p>
           </section>
         </div>
