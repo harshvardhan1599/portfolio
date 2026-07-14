@@ -8,6 +8,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { tint } from "@/components/tint";
 
 interface Props {
   src: string;
@@ -47,13 +48,18 @@ export function PaddedTile({
   return (
     <div
       className={`overflow-hidden rounded-2xl transition-colors hover:bg-fill-hover ${bg}`}
-      style={{ aspectRatio: aspect, padding: tune ? pad : padding }}
+      style={{
+        aspectRatio: aspect,
+        padding: tune ? pad : padding,
+        backgroundColor: tint(src),
+      }}
     >
       <Image
         src={src}
         alt={alt}
         width={width}
         height={height}
+        sizes="(min-width: 768px) 50vw, 100vw"
         className={`h-full w-full ${cover ? "object-cover" : "object-contain"}`}
       />
 

@@ -7,6 +7,8 @@ import { DisplayTile } from "@/components/DisplayTile";
 import { PhonesTile } from "@/components/PhonesTile";
 import { NotetakerTile } from "@/components/NotetakerTile";
 import { PaddedTile } from "@/components/PaddedTile";
+import { Reveal } from "@/components/Reveal";
+import { tint } from "@/components/tint";
 
 export default function Home() {
   return (
@@ -17,12 +19,18 @@ export default function Home() {
           <div className="flex flex-col gap-10 md:flex-row md:items-stretch md:justify-between">
             {/* Left: location + time (top), then title (bottom) */}
             <div className="flex flex-col md:justify-between">
-              <Greeting />
-              <h1 className="text-hero mt-6 text-3xl text-foreground sm:text-4xl md:mt-16 lg:text-5xl">
+              <Reveal delay={0}>
+                <Greeting />
+              </Reveal>
+              <Reveal
+                as="h1"
+                delay={80}
+                className="text-hero mt-6 text-3xl text-foreground sm:text-4xl md:mt-16 lg:text-5xl"
+              >
                 Harsh Vardhan Singh,
                 <br />
                 Product Designer
-              </h1>
+              </Reveal>
             </div>
 
             {/* Right: menu (top), then secondary text (bottom) */}
@@ -37,7 +45,7 @@ export default function Home() {
         {/* Work */}
         <div className="surface-light px-6 pt-10 md:px-14">
           {/* Project 1 — Sensei Agent (50/50 two-column scaffold) */}
-          <div className="pb-16">
+          <Reveal className="pb-16">
             <p className="text-alt text-muted">
               Currently leading design and product at{" "}
               <span className="text-foreground">Sensei Agent</span>, an agentic
@@ -47,7 +55,7 @@ export default function Home() {
             <Link
               href="/work/sensei-agent"
               data-cursor="case-study"
-              className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+              className="mt-4 grid grid-cols-1 items-stretch gap-4 transition-transform duration-[120ms] ease-out active:scale-[0.985] motion-reduce:active:scale-100 md:grid-cols-2"
             >
               {/* Left column — tile heights sum to 1360px (matches right) */}
               <div className="flex flex-col gap-4">
@@ -67,6 +75,7 @@ export default function Home() {
                         alt="Prannay Khosla"
                         width={80}
                         height={80}
+                        sizes="36px"
                         className="h-9 w-9 shrink-0 rounded-full object-cover"
                       />
                       <span className="text-alt-sm text-muted">
@@ -77,12 +86,16 @@ export default function Home() {
                 </figure>
 
                 {/* Orchestration & Observability */}
-                <div className="aspect-[660/420] overflow-hidden rounded-2xl bg-fill">
+                <div
+                  className="aspect-[660/420] overflow-hidden rounded-2xl"
+                  style={{ backgroundColor: tint("/work/sensei-orchestration.png") }}
+                >
                   <Image
                     src="/work/sensei-orchestration.png"
                     alt="Sensei Agent — Orchestration and Observability: know the current state of every deal"
                     width={2412}
                     height={1623}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -94,12 +107,16 @@ export default function Home() {
                 <PhonesTile />
 
                 {/* Deal discovery board */}
-                <div className="aspect-[660/440] overflow-hidden rounded-2xl bg-fill-secondary">
+                <div
+                  className="aspect-[660/440] overflow-hidden rounded-2xl"
+                  style={{ backgroundColor: tint("/work/sensei-discovery.png") }}
+                >
                   <Image
                     src="/work/sensei-discovery.png"
                     alt="Sensei Agent — deal discovery board across pipeline stages"
                     width={2412}
                     height={1623}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -108,10 +125,10 @@ export default function Home() {
                 <NotetakerTile />
               </div>
             </Link>
-          </div>
+          </Reveal>
 
           {/* Project 2 — Airbase (50/50 two-column) */}
-          <div className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
+          <Reveal className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
             <p className="text-alt text-muted">
               <span className="text-foreground">Airbase</span>, spend management
               platform. Acquired by Paylocity in 2025.
@@ -120,27 +137,35 @@ export default function Home() {
             <Link
               href="/work/airbase"
               data-cursor="case-study"
-              className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+              className="mt-4 grid grid-cols-1 items-stretch gap-4 transition-transform duration-[120ms] ease-out active:scale-[0.985] motion-reduce:active:scale-100 md:grid-cols-2"
             >
               {/* Left column — two large tiles (drive the height) */}
               <div className="flex flex-col gap-4">
                 {/* Airbase dashboard */}
-                <div className="aspect-[660/520] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
+                <div
+                  className="aspect-[660/520] overflow-hidden rounded-2xl transition-colors hover:bg-fill-hover"
+                  style={{ backgroundColor: tint("/work/airbase-dashboard.png") }}
+                >
                   <Image
                     src="/work/airbase-dashboard.png"
                     alt="Airbase — Analyze Spend dashboard"
                     width={2412}
                     height={1770}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover object-left-top"
                   />
                 </div>
                 {/* Airbase ledger / productivity */}
-                <div className="aspect-[660/520] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
+                <div
+                  className="aspect-[660/520] overflow-hidden rounded-2xl transition-colors hover:bg-fill-hover"
+                  style={{ backgroundColor: tint("/work/airbase-ledger.png") }}
+                >
                   <Image
                     src="/work/airbase-ledger.png"
                     alt="Airbase — Productivity reports dashboard on Studio Display"
                     width={2412}
                     height={1911}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
@@ -149,12 +174,16 @@ export default function Home() {
               {/* Right column — two tiles + testimonial (flexes to match) */}
               <div className="flex flex-col gap-4">
                 {/* Spend via cards + spending by person (one tall image) */}
-                <div className="aspect-[2412/2358] overflow-hidden rounded-2xl bg-fill transition-colors hover:bg-fill-hover">
+                <div
+                  className="aspect-[2412/2358] overflow-hidden rounded-2xl transition-colors hover:bg-fill-hover"
+                  style={{ backgroundColor: tint("/work/airbase-spend.png") }}
+                >
                   <Image
                     src="/work/airbase-spend.png"
                     alt="Airbase — spend via cards and spending by person"
                     width={2412}
                     height={2358}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-cover object-top"
                   />
                 </div>
@@ -173,6 +202,7 @@ export default function Home() {
                         alt="Daru Sim"
                         width={80}
                         height={80}
+                        sizes="36px"
                         className="h-9 w-9 shrink-0 rounded-full object-cover"
                       />
                       <span className="text-alt-sm text-muted">
@@ -183,10 +213,10 @@ export default function Home() {
                 </figure>
               </div>
             </Link>
-          </div>
+          </Reveal>
 
           {/* Project 3 — Swadesh (50/50 two-column) */}
-          <div className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
+          <Reveal className="pb-16 [content-visibility:auto] [contain-intrinsic-size:auto_1400px]">
             <p className="text-alt text-muted">
               Led design and branding at{" "}
               <span className="text-foreground">Swadesh (YC S19)</span>, building
@@ -196,7 +226,7 @@ export default function Home() {
             <Link
               href="/work/swadesh"
               data-cursor="case-study"
-              className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2"
+              className="mt-4 grid grid-cols-1 items-stretch gap-4 transition-transform duration-[120ms] ease-out active:scale-[0.985] motion-reduce:active:scale-100 md:grid-cols-2"
             >
               {/* Left column */}
               <div className="flex flex-col gap-4">
@@ -219,12 +249,16 @@ export default function Home() {
                   cover
                 />
                 {/* Globalpay transfer status */}
-                <div className="aspect-[660/400] overflow-hidden rounded-2xl bg-fill-secondary transition-colors hover:bg-fill-hover">
+                <div
+                  className="aspect-[660/400] overflow-hidden rounded-2xl transition-colors hover:bg-fill-hover"
+                  style={{ backgroundColor: tint("/work/swadesh-project-3.png") }}
+                >
                   <Image
                     src="/work/swadesh-project-3.png"
                     alt="Swadesh — Globalpay transfer status"
                     width={3162}
                     height={1974}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="h-full w-full object-contain"
                   />
                 </div>
@@ -247,6 +281,7 @@ export default function Home() {
                         alt="Prateek Swain"
                         width={80}
                         height={80}
+                        sizes="36px"
                         className="h-9 w-9 shrink-0 rounded-full object-cover"
                       />
                       <span className="text-alt-sm text-muted">
@@ -272,12 +307,13 @@ export default function Home() {
                     alt="Swadesh — green debit Visa card held in hand"
                     width={3162}
                     height={1974}
+                    sizes="(min-width: 768px) 50vw, 100vw"
                     className="relative z-10 h-full w-full scale-[1.03] object-cover object-bottom"
                   />
                 </div>
               </div>
             </Link>
-          </div>
+          </Reveal>
         </div>
       </section>
     </div>

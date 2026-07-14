@@ -50,6 +50,11 @@
   --surface: #F0F0F0;
   --border: #DEDEDE;
   --hover: #EEEEEE;
+  /* light hover-highlight (dark accent text on a pale wash) — without these two
+     the case-study text highlight would inherit the global `.dark` variant and
+     render as a dark-mode highlight on the light page. */
+  --accent: #FF5800;
+  --hover-accent: #F9ECE5;
   --fill: #E0E0E0;
   --fill-secondary: #F4F4F4;
   --fill-hover: #D8D8D8;
@@ -142,6 +147,23 @@
   --hover-accent: #11332F;
 }
 
+/* Light-surface scope keeps each project's LIGHT accent even under the global
+   `.dark` theme, so the case-study text highlight is dark-on-pale (light mode),
+   not the dark-mode variant. Set on the closer `.surface-light` ancestor, so it
+   wins for the highlight over the `.dark.theme-*` values registered on <html>. */
+.theme-swadesh .surface-light {
+  --accent: #166C3B;
+  --hover-accent: #E0EDEA;
+}
+.theme-sensei-agent .surface-light {
+  --accent: #845201;
+  --hover-accent: #FDF2DC;
+}
+.theme-playground .surface-light {
+  --accent: #076E6A;
+  --hover-accent: #E8F1F0;
+}
+
 body {
   background-color: var(--page-bg);
   color: var(--foreground);
@@ -175,7 +197,7 @@ body {
   inset: 0;
   background-color: #000;
   opacity: 0;
-  transition: opacity 300ms ease;
+  transition: opacity 200ms ease;
 }
 .card-gradient:hover::before {
   opacity: 0.18;

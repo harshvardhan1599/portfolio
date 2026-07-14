@@ -362,11 +362,20 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
 
       let raf = 0;
       let frame = 0;
+      // Skip the (main-thread) noise draw whenever the band is scrolled off-screen
+      // or the tab is hidden — frees ~1-2ms/frame during load/scroll. Forced on
+      // while `travel` (the shared home↔about transition re-parents the band into
+      // a fixed on-screen strip). The rAF keeps ticking so it resumes instantly;
+      // the phase accumulator caps dt, so no jump on resume.
+      let onScreen = true;
+      let docVisible =
+        typeof document === "undefined" || !document.hidden;
       const loop = () => {
         frame++;
+        const active = (onScreen && docVisible) || cfgRef.current.travel;
         // travel mode draws at ~30fps (every other frame): a discrete-cell flame
         // reads identically, and each skipped frame is budget for the page mount.
-        if (!cfgRef.current.travel || frame % 2 === 0) {
+        if (active && (!cfgRef.current.travel || frame % 2 === 0)) {
           draw(performance.now() / 1000);
         }
         raf = requestAnimationFrame(loop);
@@ -384,6 +393,18 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
         if (reduced) draw(0);
       });
       ro.observe(wrap);
+
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          onScreen = entry.isIntersecting;
+        },
+        { rootMargin: "100px" },
+      );
+      io.observe(wrap);
+      const onVisibility = () => {
+        docVisible = !document.hidden;
+      };
+      document.addEventListener("visibilitychange", onVisibility);
 
       const onPointerMove = (e: PointerEvent) => {
         const r = wrap.getBoundingClientRect();
@@ -423,6 +444,8 @@ export const DitherBand = forwardRef<DitherBandHandle, Partial<DitherConfig>>(
       return () => {
         cancelAnimationFrame(raf);
         ro.disconnect();
+        io.disconnect();
+        document.removeEventListener("visibilitychange", onVisibility);
         wrap.removeEventListener("pointermove", onPointerMove);
         wrap.removeEventListener("pointerleave", onPointerLeave);
         wrap.removeEventListener("pointerdown", onPointerDown);

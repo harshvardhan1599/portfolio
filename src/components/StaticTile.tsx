@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { LazyVideo } from "@/components/LazyVideo";
+import { tint } from "@/components/tint";
 
 const TRANSITION_MS = 500;
 
@@ -47,19 +49,21 @@ export function StaticTile({
     <figure
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className={`flex flex-col gap-3 relative transition-transform duration-500 ease-out ${origin} ${
+      className={`flex flex-col gap-3 relative transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] ${origin} ${
         isLifted ? "z-50" : "z-0"
-      } ${isHovered ? "scale-[1.04]" : "scale-100"}`}
+      } ${isHovered ? "scale-[1.04] motion-reduce:scale-100" : "scale-100"}`}
     >
-      <div className="rounded-none bg-fill overflow-hidden">
+      <div
+        className="rounded-none overflow-hidden"
+        style={{ backgroundColor: tint(src) }}
+      >
         {isVideo ? (
-          <video
+          <LazyVideo
             src={src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            aria-label={alt}
+            poster={src.replace(/\.(mp4|webm|mov)$/i, "-poster.jpg")}
+            width={width}
+            height={height}
+            ariaLabel={alt}
             className="w-full h-auto block"
           />
         ) : (
@@ -85,7 +89,7 @@ export function StaticTile({
           rel="noopener noreferrer"
           data-cursor="case-study"
           data-cursor-label="View Project"
-          className="block"
+          className="block transition-transform duration-[120ms] ease-out active:scale-[0.98] motion-reduce:active:scale-100"
         >
           {figure}
         </a>
@@ -95,7 +99,7 @@ export function StaticTile({
 
       <div
         aria-hidden
-        className={`fixed inset-0 z-40 pointer-events-none backdrop-blur-sm bg-background/20 transition-opacity duration-500 ease-out ${
+        className={`fixed inset-0 z-40 pointer-events-none backdrop-blur-sm bg-background/20 transition-opacity duration-300 ease-out motion-reduce:hidden ${
           isHovered ? "opacity-100" : "opacity-0"
         }`}
       />

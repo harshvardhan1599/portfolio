@@ -127,24 +127,28 @@ export function Header() {
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <div
-        ref={barRef}
-        className="flex items-center gap-4 px-6 py-5 md:px-14"
-      >
-        <nav className="text-alt text-muted flex min-w-0 items-center gap-2">
-          <Logo />
-          <Link
-            href="/"
-            className="hover:text-foreground transition-colors whitespace-nowrap"
-          >
-            <span className="sm:hidden">HARSH</span>
-            <span className="hidden sm:inline">HARSH VARDHAN SINGH</span>
-          </Link>
-          <CaretRight />
-          <span className="text-foreground truncate">
-            {projectName.toUpperCase()}
-          </span>
-        </nav>
+      {/* pt pushes the bar down onto the SiteMenu's line (top-12 / md:top-14);
+          the bar's min-height matches the navbar's Contact pill so the
+          breadcrumb text centers on the same line as the nav links. */}
+      <div className="pt-12 md:pt-14">
+        <div
+          ref={barRef}
+          className="flex min-h-[42px] items-center gap-4 px-6 md:min-h-[46px] md:px-14"
+        >
+          <nav className="text-alt text-muted flex min-w-0 items-center gap-2">
+            <Logo />
+            <Link
+              href="/"
+              className="hover:text-foreground transition-colors whitespace-nowrap"
+            >
+              WORK
+            </Link>
+            <CaretRight />
+            <span className="text-foreground truncate">
+              {projectName.toUpperCase()}
+            </span>
+          </nav>
+        </div>
       </div>
     </header>
   );

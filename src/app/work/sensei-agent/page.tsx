@@ -99,7 +99,7 @@ export default function SenseiAgentPage() {
   return (
     <article className="surface-light flex-1">
       <section className="mx-auto w-full max-w-4xl">
-        <div className="px-6 md:px-16 pb-8 pt-10 md:pt-12">
+        <div className="px-6 md:px-16 pb-8 pt-32 md:pt-40">
           <p className="text-alt text-muted">
             Sensei Agent  
           </p>
@@ -114,6 +114,7 @@ export default function SenseiAgentPage() {
             alt="Sensei Agent — product hero"
             width={3162}
             height={1263}
+            sizes="(min-width: 896px) 896px, 100vw"
             className="w-full object-center "
             priority
           />
@@ -188,6 +189,7 @@ export default function SenseiAgentPage() {
                       alt={image.alt}
                       width={image.width}
                       height={image.height}
+                      sizes="(min-width: 896px) 896px, 100vw"
                       className="block w-full h-auto"
                     />
                   </div>

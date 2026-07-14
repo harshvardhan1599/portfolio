@@ -221,7 +221,7 @@ export function CustomCursor() {
           className="text-body-sm text-foreground-inverse whitespace-nowrap"
           style={{
             opacity: isPill ? 1 : 0,
-            transform: isPill ? "scale(1)" : "scale(0)",
+            transform: isPill ? "scale(1)" : "scale(0.9)",
             transition: "opacity 200ms ease-out, transform 200ms ease-out",
           }}
         >

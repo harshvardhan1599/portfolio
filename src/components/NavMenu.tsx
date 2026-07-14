@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { navItems } from "@/components/Sidebar";
 import { useDitherNav } from "@/components/DitherStage";
 
@@ -22,6 +22,7 @@ const CONTACT = navItems.find((item) => item.external);
 
 export function NavMenu() {
   const navigate = useDitherNav();
+  const router = useRouter();
   const pathname = usePathname();
 
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -57,6 +58,26 @@ export function NavMenu() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // keyboard shortcuts — the [W]/[A]/[T]/[C] badges are live: press the letter to
+  // jump to that tab (ignored while typing or when a modifier is held).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName)))
+        return;
+      const item = navItems.find(
+        (n) => n.key.toLowerCase() === e.key.toLowerCase(),
+      );
+      if (!item) return;
+      e.preventDefault();
+      if (item.external) window.location.href = item.href;
+      else if (!navigate(item.href)) router.push(item.href);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [navigate, router]);
+
   return (
     <nav className="flex items-center gap-6 text-base md:text-lg">
       {/* links group — relative box that hosts the sliding underline; the extra
@@ -78,11 +99,16 @@ export function NavMenu() {
               onClick={(e) => {
                 if (navigate(item.href)) e.preventDefault();
               }}
-              className={`transition-colors ${
-                active ? "text-foreground" : "text-muted hover:text-foreground"
+              className={`inline-flex items-center gap-1.5 transition-colors ${
+                active
+                  ? "text-foreground"
+                  : "text-foreground/55 hover:text-foreground"
               }`}
             >
               {item.label}
+              <kbd className="font-mono text-[0.82em] text-foreground/35">
+                [{item.key}]
+              </kbd>
             </Link>
           );
         })}
@@ -95,7 +121,7 @@ export function NavMenu() {
               width: indicator.width,
               transform: `translateX(${indicator.left}px)`,
               transition: animate
-                ? "transform 450ms cubic-bezier(0.4, 0, 0.1, 1), width 450ms cubic-bezier(0.4, 0, 0.1, 1)"
+                ? "transform 100ms ease-out, width 100ms ease-out"
                 : "none",
             }}
           />
@@ -107,10 +133,12 @@ export function NavMenu() {
           href={CONTACT.href}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-2 rounded-xl border border-[#505053] bg-[#212124] px-4 py-2 text-muted transition-colors hover:border-[#6a6a6e]"
+          className="flex items-center gap-2 rounded-xl border border-foreground/40 px-4 py-2 text-foreground/80 transition-[color,border-color,transform] duration-[120ms] ease-out hover:border-foreground/70 hover:text-foreground active:scale-[0.97] motion-reduce:active:scale-100"
         >
           {CONTACT.label}
-          <span className="font-mono">C</span>
+          <kbd className="font-mono text-[0.95em] text-foreground/50">
+            [{CONTACT.key}]
+          </kbd>
         </a>
       )}
     </nav>

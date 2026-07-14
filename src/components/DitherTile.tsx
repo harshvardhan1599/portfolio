@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { LazyVideo } from "@/components/LazyVideo";
+import { tint } from "@/components/tint";
 
 const TRANSITION_MS = 500;
 
@@ -31,18 +33,21 @@ export function DitherTile() {
         onMouseLeave={handleLeave}
         data-cursor="case-study"
         data-cursor-label="View Project"
-        className={`block relative transition-transform duration-500 ease-out origin-top-left ${
+        className={`block relative transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] origin-top-left active:scale-[0.98] motion-reduce:active:scale-100 ${
           isLifted ? "z-50" : "z-0"
-        } ${isHovered ? "scale-[1.04]" : "scale-100"}`}
+        } ${isHovered ? "scale-[1.04] motion-reduce:scale-100" : "scale-100"}`}
       >
         <figure className="flex flex-col gap-3">
-          <div className="rounded-none bg-fill overflow-hidden">
-            <video
+          <div
+            className="rounded-none overflow-hidden"
+            style={{ backgroundColor: tint("/playground/dither.mp4") }}
+          >
+            <LazyVideo
               src="/playground/dither.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
+              poster="/playground/dither-poster.jpg"
+              width={1664}
+              height={1080}
+              ariaLabel="Dither pattern generative tool"
               className="w-full h-auto block"
             />
           </div>
@@ -54,7 +59,7 @@ export function DitherTile() {
 
       <div
         aria-hidden
-        className={`fixed inset-0 z-40 pointer-events-none backdrop-blur-sm bg-background/20 transition-opacity duration-500 ease-out ${
+        className={`fixed inset-0 z-40 pointer-events-none backdrop-blur-sm bg-background/20 transition-opacity duration-300 ease-out motion-reduce:hidden ${
           isHovered ? "opacity-100" : "opacity-0"
         }`}
       />

@@ -4,14 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export type NavItem =
-  | { href: string; label: string; external?: false }
-  | { href: string; label: string; external: true };
+  | { href: string; label: string; key: string; external?: false }
+  | { href: string; label: string; key: string; external: true };
 
 export const navItems: NavItem[] = [
-  { href: "/", label: "Work" },
-  { href: "/playground", label: "Tinkerings" },
-  { href: "/about", label: "About" },
-  { href: "mailto:harshvardhan1599@gmail.com", label: "Contact", external: true },
+  { href: "/", label: "Work", key: "W" },
+  { href: "/about", label: "About", key: "A" },
+  { href: "/playground", label: "Tinkerings", key: "T" },
+  { href: "mailto:harshvardhan1599@gmail.com", label: "Contact", key: "C", external: true },
 ];
 
 type MetaItem = {

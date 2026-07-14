@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import GradientBackground, {
   type GradientBackgroundHandle,
 } from "@/components/GradientBackground";
+import { LazyVideo } from "@/components/LazyVideo";
 
 type Media = { kind: "image" | "video" | "gradient"; src: string };
 
@@ -57,11 +58,11 @@ const COVER: React.CSSProperties = {
 // off = distance from the card's edge to its near side at REF_W (negative =
 // already bleeding off that edge). Derived from the tuned 1440px placements.
 const CARDS: CardDef[] = [
-  { id: "disco", name: "disco.jpg", kind: "image", src: "/carousel/carousel2.png", width: 362, aspect: "3 / 2", top: 1060, edge: "right", off: -169, rot: -2 },
+  { id: "disco", name: "disco.jpg", kind: "image", src: "/carousel/carousel2.jpg", width: 362, aspect: "3 / 2", top: 1060, edge: "right", off: -169, rot: -2 },
   { id: "sunday", name: "sunday.jpg", kind: "image", src: "/about/sunday.jpg", width: 336, aspect: "3 / 4", top: 403, edge: "left", off: 100, rot: 0 },
-  { id: "columns", name: "columns.jpg", kind: "image", src: "/carousel/carousel1.png", width: 280, aspect: "3 / 4", top: 557, edge: "right", off: -91, rot: -4 },
+  { id: "columns", name: "columns.jpg", kind: "image", src: "/carousel/carousel1.jpg", width: 280, aspect: "3 / 4", top: 557, edge: "right", off: -91, rot: -4 },
   { id: "lake", name: "lake.mp4", kind: "video", src: "/carousel/carousel4.mp4", width: 342, aspect: "3 / 4", top: 976, edge: "left", off: 120, rot: 5 },
-  { id: "strips", name: "strips.mp4", kind: "gradient", src: "/about/strips-loop.mp4", width: 404, aspect: "16 / 9", top: 155, edge: "right", off: 304, rot: -3 },
+  { id: "strips", name: "strips.mp4", kind: "gradient", src: "", width: 404, aspect: "16 / 9", top: 155, edge: "right", off: 304, rot: -3 },
 ];
 
 type Pos = { x: number; y: number; z: number };
@@ -254,13 +255,12 @@ export function DraggablePhotos() {
                   sizes="500px"
                 />
               ) : c.kind === "video" ? (
-                <video
+                <LazyVideo
                   src={c.src}
+                  poster={c.src.replace(/\.(mp4|webm|mov)$/i, "-poster.jpg")}
+                  width={700}
+                  height={934}
                   className="h-full w-full object-cover"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
                 />
               ) : (
                 <GradientBackground

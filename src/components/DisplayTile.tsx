@@ -3,13 +3,17 @@
 // both values were tuned via temporary dev sliders and baked in.
 
 import Image from "next/image";
+import { tint } from "@/components/tint";
 
 const SCALE = 1.2;
 const PADDING = 48; // px
 
 export function DisplayTile() {
   return (
-    <div className="relative aspect-[660/560] overflow-hidden rounded-2xl bg-fill">
+    <div
+      className="relative aspect-[660/560] overflow-hidden rounded-2xl"
+      style={{ backgroundColor: tint("/work/sensei-display-bg.png") }}
+    >
       <Image
         src="/work/sensei-display-bg.png"
         alt=""
