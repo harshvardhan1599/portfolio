@@ -41,6 +41,8 @@ export function PaddedTile({
   const [mounted, setMounted] = useState(false);
   const dev = process.env.NODE_ENV !== "production";
 
+  // mount gate so the dev-only slider never renders during SSR/hydration
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   const showSlider = tune && dev && mounted;

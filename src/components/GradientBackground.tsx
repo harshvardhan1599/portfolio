@@ -336,14 +336,16 @@ const GradientBackground = forwardRef<
 
     const onVisibility = () => {
       visible = !document.hidden;
-      visible ? start() : stop();
+      if (visible) start();
+      else stop();
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     const io = new IntersectionObserver(
       ([entry]) => {
         onScreen = entry.isIntersecting;
-        onScreen ? start() : stop();
+        if (onScreen) start();
+        else stop();
       },
       { threshold: 0 }
     );
@@ -370,7 +372,7 @@ const GradientBackground = forwardRef<
     };
     // Mount-once: initial look comes from cfgRef; live changes flow through the
     // imperative handle, so we deliberately do not re-init on prop changes.
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <canvas

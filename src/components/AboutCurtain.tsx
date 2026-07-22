@@ -27,6 +27,8 @@ export function AboutCurtain() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (reduced) {
+      // reduced motion: skip the curtain entirely (client-only media query)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setGone(true);
       return;
     }

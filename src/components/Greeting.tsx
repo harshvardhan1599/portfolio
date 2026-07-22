@@ -15,6 +15,8 @@ export function Greeting() {
   const [time, setTime] = useState("");
 
   useEffect(() => {
+    // client-only clock: set after mount to avoid an SSR hydration mismatch
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTime(getTime());
     const interval = setInterval(() => setTime(getTime()), 60_000);
     return () => clearInterval(interval);
