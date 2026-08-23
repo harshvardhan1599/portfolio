@@ -143,13 +143,15 @@ body {
 }
 
 .text-hero {
-  font-family: var(--font-sans);
-  font-optical-sizing: auto; /* Inter Display letterforms */
-  font-weight: 500;
+  /* Ovo — the same serif the About page sets its headline in. Ovo ships a
+     single 400 weight, so asking for 500 here would only get a synthesised
+     fake-bold. Sentence case, also matching About: the serif caps that the
+     previous uppercase Inter treatment relied on read very differently. */
+  font-family: var(--font-display);
+  font-weight: 400;
   /* size is set responsively via Tailwind text-* on the element */
-  line-height: 1.3;
+  line-height: 1.15;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
   text-wrap: balance;
 }
 

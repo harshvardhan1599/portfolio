@@ -22,11 +22,16 @@ export function Greeting() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!time) return null;
-
+  // The label always renders, even before the clock resolves: returning null
+  // until then shipped a zero-height node, and the line appearing at hydration
+  // grew the hero column and pushed everything below it — the dither band
+  // included — down the page. Only the digits are deferred, and they change
+  // width, not height, so there's nothing left to shift.
   return (
-    <span className="font-mono uppercase tracking-[0.02em] tabular-nums text-muted text-base md:text-lg">
-      DEL, IND &bull; {time}
+    // Sans at text-base/lg to match NavMenu across the hero. tabular-nums stays
+    // so the clock's digits don't shuffle the line's width each minute.
+    <span className="font-sans tabular-nums text-muted text-base md:text-lg">
+      Delhi, India &bull; {time}
     </span>
   );
 }

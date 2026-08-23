@@ -18,6 +18,10 @@ type RevealProps = {
   as?: ElementType;
   delay?: number; // ms — stagger offset
   y?: number; // rise distance, px
+  // Play on mount instead of waiting to be scrolled into view. For blocks that
+  // start on screen but are too tall to satisfy the observer's threshold — 15%
+  // of a 1400px section is 210px, which a first paint rarely clears.
+  immediate?: boolean;
   className?: string;
   children: ReactNode;
 };
@@ -26,6 +30,7 @@ export function Reveal({
   as: Tag = "div",
   delay = 0,
   y = 18,
+  immediate = false,
   className,
   children,
 }: RevealProps) {
@@ -40,6 +45,21 @@ export function Reveal({
 
   useEffect(() => {
     if (reduced) return;
+
+    if (immediate) {
+      // Two frames, so the hidden state is painted before the transition starts
+      // — flipping in the same frame as mount would skip the animation entirely.
+      // Same approach AboutBody uses for its staggered entrance.
+      let inner = 0;
+      const outer = requestAnimationFrame(() => {
+        inner = requestAnimationFrame(() => setShown(true));
+      });
+      return () => {
+        cancelAnimationFrame(outer);
+        cancelAnimationFrame(inner);
+      };
+    }
+
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -53,7 +73,7 @@ export function Reveal({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [reduced]);
+  }, [reduced, immediate]);
 
   const settled = reduced || done;
   const style = settled

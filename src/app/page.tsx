@@ -15,25 +15,28 @@ export default function Home() {
     <div className="flex-1">
       <section>
         {/* Hero */}
-        <div className="px-6 pb-10 pt-12 md:px-14 md:pt-14">
-          <div className="flex flex-col gap-10 md:flex-row md:items-stretch md:justify-between">
-            {/* Left: location + time (top), then title (bottom) */}
-            <div className="flex flex-col md:justify-between">
-              <Reveal delay={0}>
-                <Greeting />
-              </Reveal>
-              <Reveal
-                as="h1"
-                delay={80}
-                className="text-hero mt-6 text-3xl text-foreground sm:text-4xl md:mt-16 lg:text-5xl"
-              >
-                Harsh Vardhan Singh,
-                <br />
-                Product Designer
-              </Reveal>
-            </div>
+        <div className="px-6 pb-4 pt-12 md:px-14 md:pt-14">
+          {/* Location + time sits on its own line above the split, so the
+              title and the secondary text below can share a top edge. Keeping
+              it inside the left column would have offset the title by the
+              greeting's height and there'd be nothing for the right column to
+              align to. */}
+          <Reveal delay={0}>
+            <Greeting />
+          </Reveal>
 
-            {/* Right: menu (top), then secondary text (bottom) */}
+          {/* Title and secondary text, top-aligned across the two columns. */}
+          <div className="mt-10 flex flex-col gap-10 md:mt-24 md:flex-row md:items-start md:justify-between">
+            <Reveal
+              as="h1"
+              delay={80}
+              className="text-hero text-3xl text-foreground sm:text-4xl lg:text-5xl"
+            >
+              Harsh Vardhan Singh,
+              <br />
+              Product Designer
+            </Reveal>
+
             <HeroAside />
           </div>
         </div>
@@ -44,10 +47,11 @@ export default function Home() {
 
         {/* Work */}
         <div className="surface-light px-6 pt-10 md:px-14">
-          {/* Project 1 — Sensei Agent (50/50 two-column scaffold) */}
-          <Reveal className="pb-16">
+          {/* Project 1 — Sensei Agent (50/50 two-column scaffold). Reveals on
+              load rather than on scroll, continuing the hero's 80ms cascade;
+              it's on screen at first paint but too tall to trip the observer. */}
+          <Reveal immediate delay={240} className="pb-16">
             <p className="text-alt text-muted">
-              Currently leading design and product at{" "}
               <span className="text-foreground">Sensei Agent</span>, an agentic
               sales CRM incubated at Suttor Hill Ventures.
             </p>
