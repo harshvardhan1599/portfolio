@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { DITHER_DEFAULTS, EMBER_COLORS } from "@/components/DitherBand";
+import {
+  DITHER_DEFAULTS,
+  EMBER_COLORS,
+  packColor,
+} from "@/components/dither/config";
 
 type CursorMode = "default" | "hover" | "case-study";
 
@@ -31,7 +35,9 @@ export function CustomCursor() {
 
   // ember trail
   const trailCanvasRef = useRef<HTMLCanvasElement>(null);
-  const bandRectRef = useRef<DOMRect | null>(null);
+  // The band element itself, not a cached rect: the band moves with the page, so
+  // a rect captured on mousemove is wrong the moment the user scrolls.
+  const fireElRef = useRef<HTMLElement | null>(null);
   const trailRef = useRef<
     { col: number; row: number; birth: number; life: number; color: string }[]
   >([]);
@@ -41,11 +47,27 @@ export function CustomCursor() {
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let idle = 0;
 
     // reveal next frame (avoids a synchronous setState inside the effect body)
     const showRaf = requestAnimationFrame(() => setVisible(true));
+
+    // The trail is drawn on the band's own cell grid — one bitmap pixel per
+    // dither cell, CSS-upscaled over the band — rather than as full-viewport
+    // device-pixel rectangles. That is ~700 pixels a frame instead of clearing
+    // and re-uploading a ~4.6Mpx surface, and it makes the sparks land exactly
+    // on the band's squares instead of merely near them.
+    let img: ImageData | null = null;
+    let px: Uint32Array | null = null;
+    const packed = new Map<string, number>();
+    const packOnce = (hex: string) => {
+      let v = packed.get(hex);
+      if (v === undefined) {
+        v = packColor(hex);
+        packed.set(hex, v);
+      }
+      return v;
+    };
 
     const drawTrail = () => {
       const cv = trailCanvasRef.current;
@@ -54,31 +76,42 @@ export function CustomCursor() {
         rafRef.current = 0;
         return;
       }
-      const w = Math.round(window.innerWidth * dpr);
-      const h = Math.round(window.innerHeight * dpr);
-      if (cv.width !== w || cv.height !== h) {
-        cv.width = w;
-        cv.height = h;
-        cv.style.width = `${window.innerWidth}px`;
-        cv.style.height = `${window.innerHeight}px`;
-      }
       const now = performance.now() / 1000;
       trailRef.current = trailRef.current.filter((em) => now - em.birth < em.life);
-      ctx.clearRect(0, 0, cv.width, cv.height);
-      const r = bandRectRef.current;
-      const cellDev = CELL * dpr;
-      if (r) {
-        for (const em of trailRef.current) {
-          // no drift, no fade — appear then blink out in place like the dither
-          ctx.fillStyle = em.color;
-          ctx.fillRect(
-            Math.round((r.left + em.col * CELL) * dpr),
-            Math.round((r.top + em.row * CELL) * dpr),
-            Math.ceil(cellDev),
-            Math.ceil(cellDev),
-          );
-        }
+
+      // Re-measured every frame, so scrolling can't desync the overlay.
+      const el = fireElRef.current;
+      const r = el && el.isConnected ? el.getBoundingClientRect() : null;
+      if (!r) {
+        rafRef.current = 0;
+        return;
       }
+
+      const cols = Math.max(1, Math.ceil(r.width / CELL));
+      const rows = Math.max(1, Math.ceil(r.height / CELL));
+      if (cv.width !== cols || cv.height !== rows) {
+        cv.width = cols;
+        cv.height = rows;
+        img = null;
+      }
+      if (!img || !px) {
+        img = ctx.createImageData(cols, rows);
+        px = new Uint32Array(img.data.buffer);
+      }
+      // Share the band's fractional origin so the two grids line up exactly.
+      cv.style.left = `${r.left}px`;
+      cv.style.top = `${r.top}px`;
+      cv.style.width = `${cols * CELL}px`;
+      cv.style.height = `${rows * CELL}px`;
+
+      px.fill(0); // transparent — the band shows through
+      for (const em of trailRef.current) {
+        // no drift, no fade — appear then blink out in place like the dither
+        if (em.col < 0 || em.col >= cols || em.row < 0 || em.row >= rows) continue;
+        px[em.row * cols + em.col] = packOnce(em.color);
+      }
+      ctx.putImageData(img, 0, 0);
+
       rafRef.current = trailRef.current.length
         ? requestAnimationFrame(drawTrail)
         : 0;
@@ -107,7 +140,7 @@ export function CustomCursor() {
       // occasionally (not every cell) and scatter each spark off the path.
       if (fireEl && !reduced) {
         const r = fireEl.getBoundingClientRect();
-        bandRectRef.current = r;
+        fireElRef.current = fireEl as HTMLElement;
         // palette matches the band under the cursor (cool on Tinkerings, warm
         // elsewhere) — read from data-cursor-embers, fall back to the default.
         const attr = fireEl.getAttribute("data-cursor-embers");
@@ -191,8 +224,9 @@ export function CustomCursor() {
       <canvas
         ref={trailCanvasRef}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[99]"
-        style={{ imageRendering: "pixelated" }}
+        className="pointer-events-none fixed z-[99]"
+        // left/top/width/height are set per frame from the band's own rect
+        style={{ left: -9999, top: -9999, imageRendering: "pixelated" }}
       />
       <div
         ref={ref}

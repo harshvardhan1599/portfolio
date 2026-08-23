@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AboutBody } from "@/components/AboutBody";
+import { DitherSlot } from "@/components/DitherSlot";
 
 export const metadata: Metadata = {
   title: "About",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <AboutBody />;
+  return <AboutBody slot={<DitherSlot />} />;
 }

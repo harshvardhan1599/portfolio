@@ -12,7 +12,7 @@ import {
   EMBER_COLORS,
   type DitherBandHandle,
   type DitherConfig,
-} from "./DitherBand";
+} from "./dither/config";
 
 interface Slider {
   key: keyof DitherConfig;

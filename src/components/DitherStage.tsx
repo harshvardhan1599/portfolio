@@ -1,35 +1,29 @@
 "use client";
 
-// DitherStage — the persistent transition stage (Fable's architecture).
+// DitherStage — the persistent transition stage.
 //
-// It owns the ONE dither canvas for the whole site and portals it into a stable
-// host <div> that we move imperatively between per-page [data-dither-slot]
-// placeholders. Because the canvas node is never remounted (only re-parented),
-// its rAF clock, warmth field and ripples survive navigation — the band reads as
-// a single living element, not two crossfading copies.
+// It drives the ONE dither canvas for the whole site. That canvas is NOT created
+// here: it ships in the server HTML inside [data-dither-slot] with frame 0
+// already painted (see dither/poster.ts), and this component simply attaches the
+// animation engine to it once the JS arrives. Because React never owns the node,
+// there is no portal, no host div, and no render pass between hydration and the
+// band being live — the band is on screen from first paint.
 //
-// On a home↔about navigation the host is welded into a fixed strip
+// The same canvas node is moved imperatively between per-page slots, so its rAF
+// clock, warmth field and ripples survive navigation: the band reads as a single
+// living element, not two crossfading copies.
+//
+// On a home↔about navigation the canvas is welded into a fixed strip
 // [black 100vh · band · white 100vh] and the whole strip is slid with a
 // transform (never height/top, so the canvas never resizes). The fire is flared
 // hotter during travel and settled on arrival. Any non-dither navigation, a
 // missing slot, or reduced-motion falls straight through to a normal push.
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import { createContext, useCallback, useContext, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  DitherBand,
-  DITHER_DEFAULTS,
-  BLACK,
-  type DitherBandHandle,
-} from "./DitherBand";
+import { DITHER_DEFAULTS, BLACK } from "./dither/config";
+import type { DitherDriver } from "./dither/engine";
+import { SLOT_CANVAS_HTML } from "./dither/slot";
 
 const DITHER_PATHS = new Set(["/", "/about"]);
 const BAND_H = DITHER_DEFAULTS.height;
@@ -40,39 +34,81 @@ type NavFn = (href: string) => boolean;
 const DitherNavContext = createContext<NavFn>(() => false);
 export const useDitherNav = () => useContext(DitherNavContext);
 
+// A slot always ships its own canvas; this is only a guard for the impossible.
+function slotCanvas(slot: HTMLElement): HTMLCanvasElement {
+  const existing = slot.querySelector<HTMLCanvasElement>(
+    "canvas[data-dither-canvas]",
+  );
+  if (existing) return existing;
+  slot.innerHTML = SLOT_CANVAS_HTML;
+  return slot.querySelector<HTMLCanvasElement>("canvas[data-dither-canvas]")!;
+}
+
 export function DitherStage({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const bandRef = useRef<DitherBandHandle>(null);
-  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const driverRef = useRef<DitherDriver | null>(null);
   const transitioning = useRef(false);
   const lerpRaf = useRef(0);
 
-  // stable host node (created once, client-only)
+  // Attach to (or re-dock into) the current page's slot. A transition mid-flight
+  // settles itself into the destination slot, so leave it alone.
   useEffect(() => {
-    const h = document.createElement("div");
-    h.style.width = "100%";
-    setHost(h);
-    return () => {
-      cancelAnimationFrame(lerpRaf.current);
-      h.remove();
-    };
-  }, []);
-
-  // dock the host into the current page's slot on mount + route change, unless a
-  // transition is mid-flight (that settles itself into the destination slot).
-  useEffect(() => {
-    if (!host || transitioning.current) return;
+    if (transitioning.current) return;
     const slot = document.querySelector<HTMLElement>("[data-dither-slot]");
-    if (slot && host.parentElement !== slot) slot.appendChild(host);
-  }, [host, pathname]);
+
+    // No slot on this route (e.g. /work/*). The canvas goes out of the document
+    // with the unmounting page but we keep holding it, so the engine idles
+    // (shouldRun() checks isConnected) instead of burning a rAF loop on a
+    // detached, zero-width canvas — and it comes back still painted, with its
+    // flame phase and warmth intact, the moment a slot reappears.
+    if (!slot) {
+      driverRef.current?.retarget();
+      return;
+    }
+
+    // Already live — the canvas just needs to move to the new page's slot.
+    const live = canvasRef.current;
+    if (live && driverRef.current) {
+      if (live.parentElement !== slot) slot.replaceChildren(live);
+      driverRef.current.retarget();
+      return;
+    }
+
+    const canvas = slotCanvas(slot);
+    canvasRef.current = canvas;
+    let cancelled = false;
+    // Loaded on demand so the engine stays out of the layout chunk on routes
+    // that have no band at all. The baked frame covers the extra round trip.
+    import("./dither/engine").then(({ createDither }) => {
+      if (cancelled || canvasRef.current !== canvas) return;
+      driverRef.current = createDither(canvas);
+      if (process.env.NODE_ENV !== "production") {
+        (window as unknown as { __dither?: DitherDriver | null }).__dither =
+          driverRef.current;
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(lerpRaf.current);
+      driverRef.current?.destroy();
+      driverRef.current = null;
+    },
+    [],
+  );
 
   // ramp the fire hot during travel, then lerp back to defaults on landing
   const flare = useCallback((on: boolean) => {
     cancelAnimationFrame(lerpRaf.current);
     if (on) {
       // travel mode: 30fps + single noise octave, and a hotter look
-      bandRef.current?.setConfig({
+      driverRef.current?.setConfig({
         travel: true,
         speed: 1.5,
         intensity: 1.1,
@@ -80,7 +116,7 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
       });
       return;
     }
-    bandRef.current?.setConfig({ travel: false }); // full quality resumes
+    driverRef.current?.setConfig({ travel: false }); // full quality resumes
     const from = { speed: 1.5, intensity: 1.1, riseSpeed: 1.7 };
     const to = {
       speed: DITHER_DEFAULTS.speed,
@@ -91,7 +127,7 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
     const step = (now: number) => {
       const k = Math.min(1, (now - t0) / 350);
       const e = 1 - (1 - k) * (1 - k);
-      bandRef.current?.setConfig({
+      driverRef.current?.setConfig({
         speed: from.speed + (to.speed - from.speed) * e,
         intensity: from.intensity + (to.intensity - from.intensity) * e,
         riseSpeed: from.riseSpeed + (to.riseSpeed - from.riseSpeed) * e,
@@ -103,8 +139,10 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
 
   const navigate = useCallback<NavFn>(
     (href) => {
+      const canvas = canvasRef.current;
       if (
-        !host ||
+        !canvas ||
+        !driverRef.current ||
         transitioning.current ||
         href === pathname ||
         !DITHER_PATHS.has(href) ||
@@ -112,7 +150,7 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
       ) {
         return false;
       }
-      const slot = host.parentElement;
+      const slot = canvas.parentElement;
       if (!slot) return false;
 
       // reduced-motion: skip the travel, just navigate (re-docks via the effect)
@@ -123,20 +161,30 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
 
       transitioning.current = true;
       const vh = window.innerHeight;
-      const startTop = Math.max(-BAND_H, Math.min(vh, slot.getBoundingClientRect().top));
+      const startTop = Math.max(
+        -BAND_H,
+        Math.min(vh, slot.getBoundingClientRect().top),
+      );
       const expand = href === "/about"; // → about: band travels DOWN and off
       // contract target ≈ the home hero's band position (snapped exactly on land)
       const endTop = expand ? vh : Math.round(vh * 0.42);
 
-      // build the fixed strip: [black 100vh][band host][white 100vh]
+      // build the fixed strip: [black 100vh][band box][white 100vh]
       const strip = document.createElement("div");
       strip.style.cssText = `position:fixed;left:0;right:0;top:${startTop - vh}px;z-index:40;pointer-events:none;will-change:transform;`;
       const black = document.createElement("div");
       black.style.cssText = `height:${vh}px;background:${BLACK};`;
       const white = document.createElement("div");
       white.style.cssText = `height:${vh}px;background:#fff;`;
-      strip.append(black, host, white); // move the SAME canvas node into the strip
+      // The band box replaces the slot for the duration of the flight. It needs
+      // the slot's clipping: the canvas is a whole cell taller than the band and
+      // up to a cell wider than the viewport.
+      const box = document.createElement("div");
+      box.style.cssText = `width:100%;height:${BAND_H}px;overflow:hidden;line-height:0;background:linear-gradient(to bottom, ${BLACK}, #fff);`;
+      box.appendChild(canvas); // move the SAME canvas node into the strip
+      strip.append(black, box, white);
       document.body.appendChild(strip);
+      driverRef.current.retarget();
 
       flare(true);
 
@@ -177,8 +225,8 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
       };
 
       // Start compositing the strip FIRST, then push (~2 frames later) — so the
-      // destination commit (React + WebGL compile) runs behind an already-moving,
-      // fully covered animation instead of blocking its opening frames.
+      // destination commit runs behind an already-moving, fully covered
+      // animation instead of blocking its opening frames.
       anim.ready.then(() => {
         requestAnimationFrame(() =>
           requestAnimationFrame(() => {
@@ -193,16 +241,18 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
         const dock = () => {
           // dock into the DESTINATION slot only — never the stale source slot
           // (still in the DOM until the route swap), which would take the band
-          // down with it when the old page unmounts.
+          // down with it when the old page unmounts. replaceChildren discards
+          // the destination's own unpainted bootstrap canvas.
           const dest = document.querySelector<HTMLElement>("[data-dither-slot]");
           if (dest && dest !== slot) {
-            dest.appendChild(host);
+            dest.replaceChildren(canvas);
           } else if (tries++ < 600) {
             requestAnimationFrame(dock);
             return;
           }
           strip.remove();
           transitioning.current = false;
+          driverRef.current?.retarget();
           flare(false);
           // let deferred, decorative destination content mount now (see AboutBody)
           window.dispatchEvent(new CustomEvent("dither:settled"));
@@ -213,12 +263,11 @@ export function DitherStage({ children }: { children: React.ReactNode }) {
       anim.oncancel = settle;
       return true;
     },
-    [host, pathname, router, flare],
+    [pathname, router, flare],
   );
 
   return (
     <DitherNavContext.Provider value={navigate}>
-      {host && createPortal(<DitherBand ref={bandRef} />, host)}
       {children}
     </DitherNavContext.Provider>
   );

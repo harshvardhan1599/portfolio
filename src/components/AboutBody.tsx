@@ -7,7 +7,7 @@
 // band closes the page, and an AboutCurtain plays the enter transition.
 
 import { useEffect, useState } from "react";
-import { DitherSlot } from "@/components/DitherSlot";
+import type { ReactNode } from "react";
 import { DraggablePhotos } from "@/components/DraggablePhotos";
 
 const RESUME: { year: string; company: string; role: string }[] = [
@@ -17,7 +17,7 @@ const RESUME: { year: string; company: string; role: string }[] = [
   { year: "2019", company: "ADG", role: "Creative Head" },
 ];
 
-export function AboutBody() {
+export function AboutBody({ slot }: { slot: ReactNode }) {
   // Staggered reveal: every element fades + rises into place in document order,
   // each a beat after the last. `enter` flips on after mount (two frames, so the
   // hidden state paints first); reduced-motion shows everything instantly.
@@ -171,8 +171,10 @@ export function AboutBody() {
         </div>
       </div>
 
-      {/* Dither closes the page — the shared canvas docks into this slot */}
-      <DitherSlot />
+      {/* Dither closes the page — the shared canvas docks into this slot.
+          Passed in from the server page so the band's baked first frame and
+          the kernel that generates it stay out of the client bundle. */}
+      {slot}
     </article>
   );
 }
